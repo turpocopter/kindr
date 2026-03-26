@@ -6,6 +6,7 @@ import { useToyStore } from "@/stores/useToyStore";
 import type { Toy } from "@/types/toy";
 import { useSound } from '@vueuse/sound'
 import notAnymore from '@/assets/notAnymore.mp3'
+import again from '@/assets/again.mp3'
 
 
 const router = useRouter();
@@ -13,6 +14,7 @@ const toyStore = useToyStore();
 const reactionLoading = ref<boolean>(false);
 const isDeletingToy = ref<boolean>(false);
 const notAnymoreSound = useSound(notAnymore, { volume: 1 });
+const againSound = useSound(again, { volume: 1 });
 
 onMounted(async () => {
   if (!toyStore.isAuthenticated) {
@@ -35,6 +37,11 @@ const remainingToys = computed(() =>
 const goBackHome = (): void => {
   router.push({ name: "home" });
 };
+
+const resetDisliked = (): void => {
+  againSound.play();
+  toyStore.resetDisliked();
+}
 
 const deleteCurrentToy = async (): Promise<void> => {
   if (isDeletingToy.value) {
@@ -148,7 +155,7 @@ const onLike = async (toy: Toy): Promise<void> => {
           <button
             type="button"
             class="mt-6 min-h-11 rounded-full bg-emerald-400 px-8 py-4 text-xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
-            @click="toyStore.resetDisliked()"
+            @click="resetDisliked()"
           >
             🔄 Revoir les refusés
           </button>
