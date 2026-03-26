@@ -44,29 +44,29 @@ const continueBrowsing = (): void => {
       </h1>
 
       <div
-        class="mt-8 grid gap-6 md:grid-cols-2"
+        class="mt-8 grid grid-cols-2 gap-4"
         v-if="toyStore.myToy && matchToy"
       >
-        <article class="rounded-3xl bg-amber-100 p-4 shadow-lg">
-          <p class="text-xl font-bold text-slate-700">Ton jouet</p>
+        <article class="rounded-3xl bg-amber-100 p-3 shadow-lg">
+          <p class="text-sm font-bold text-slate-700">Ton jouet</p>
           <img
             :src="toyStore.myToy.photoUrl"
             :alt="toyStore.myToy.name"
-            class="mt-3 h-56 w-full rounded-2xl object-cover"
+            class="mt-2 h-40 w-full rounded-2xl object-cover"
           />
-          <p class="mt-3 text-2xl font-bold text-slate-900">
+          <p class="mt-2 text-base font-bold text-slate-900">
             {{ toyStore.myToy.name }}
           </p>
         </article>
 
-        <article class="rounded-3xl bg-emerald-100 p-4 shadow-lg">
-          <p class="text-xl font-bold text-slate-700">Jouet matché</p>
+        <article class="rounded-3xl bg-emerald-100 p-3 shadow-lg">
+          <p class="text-sm font-bold text-slate-700">Jouet matché</p>
           <img
             :src="matchToy.photoUrl"
             :alt="matchToy.name"
-            class="mt-3 h-56 w-full rounded-2xl object-cover"
+            class="mt-2 h-40 w-full rounded-2xl object-cover"
           />
-          <p class="mt-3 text-2xl font-bold text-slate-900">
+          <p class="mt-2 text-base font-bold text-slate-900">
             {{ matchToy.name }}
           </p>
         </article>

@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
   <article
-    class="relative min-h-[420px] min-w-[280px] overflow-hidden rounded-3xl shadow-2xl"
+    class="relative h-full w-full overflow-hidden rounded-3xl shadow-2xl"
   >
     <img
       :src="toy.photoUrl"

@@ -38,21 +38,33 @@ const onLike = (toy: Toy): void => {
   >
     <section class="mx-auto w-full max-w-md">
       <header class="rounded-3xl bg-white/90 p-4 shadow-lg">
-        <div class="flex items-center gap-3" v-if="toyStore.myToy">
-          <img
-            :src="toyStore.myToy.photoUrl"
-            :alt="toyStore.myToy.name"
-            class="h-16 w-16 rounded-2xl object-cover"
-          />
-          <div>
-            <p class="text-sm font-bold text-slate-600">Mon jouet</p>
-            <p class="text-xl font-bold text-slate-900">
-              {{ toyStore.myToy.name }}
-            </p>
-          </div>
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            class="flex shrink-0 items-center gap-1 rounded-full bg-fuchsia-500 px-3 py-2 text-sm font-bold text-white shadow hover:bg-fuchsia-600"
+            @click="goBackHome"
+          >
+            ← Accueil
+          </button>
+          <template v-if="toyStore.myToy">
+            <div class="flex min-w-0 flex-1 items-center gap-2">
+              <img
+                :src="toyStore.myToy.photoUrl"
+                :alt="toyStore.myToy.name"
+                class="h-10 w-10 shrink-0 rounded-xl object-cover"
+              />
+              <p class="truncate text-sm font-bold text-slate-900">
+                {{ toyStore.myToy.name }}
+              </p>
+            </div>
+            <div class="shrink-0 text-right">
+              <p class="text-xs font-bold text-slate-500">Restants</p>
+              <p class="text-xl font-bold text-slate-900">{{ remainingToys.length }}</p>
+            </div>
+          </template>
         </div>
-        <p class="mt-3 text-lg font-bold text-slate-900">
-          Jouets restants: {{ remainingToys.length }}
+        <p class="mt-2 text-center text-xs font-bold text-slate-500">
+          ❤️ {{ toyStore.likedToys.length }} mis de côté
         </p>
       </header>
 

@@ -59,6 +59,29 @@ const goToBrowse = (): void => {
       >
         Parcourir les jouets
       </button>
+
+      <section
+        v-if="toyStore.likedToys.length > 0"
+        class="mt-8 w-full rounded-3xl bg-white/90 p-5 text-slate-900 shadow-xl"
+      >
+        <h2 class="mb-4 text-xl font-bold text-fuchsia-700">
+          ❤️ Jouets mis de côté ({{ toyStore.likedToys.length }})
+        </h2>
+        <ul class="flex flex-col gap-3">
+          <li
+            v-for="toy in toyStore.likedToys"
+            :key="toy.id"
+            class="flex items-center gap-4 rounded-2xl bg-fuchsia-50 p-3 shadow"
+          >
+            <img
+              :src="toy.photoUrl"
+              :alt="toy.name"
+              class="h-16 w-16 rounded-2xl object-cover"
+            />
+            <p class="text-lg font-bold">{{ toy.name }}</p>
+          </li>
+        </ul>
+      </section>
     </section>
   </main>
 </template>
