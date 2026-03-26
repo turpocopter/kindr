@@ -270,4 +270,76 @@ const goToBrowse = (): void => {
   </main>
 </template>
 
+<style scoped>
+.toy-btn-plastic {
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+  box-shadow:
+    0 4px 0 #ca8a04,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
 
+.toy-btn-plastic:active {
+  box-shadow:
+    0 1px 0 #ca8a04,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-plastic-green {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #22c55e;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+  color: white;
+  box-shadow:
+    0 4px 0 #15803d,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-plastic-green:active {
+  box-shadow:
+    0 1px 0 #15803d,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-plastic-red {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #ef4444;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+  color: white;
+  box-shadow:
+    0 4px 0 #991b1b,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-plastic-red:active {
+  box-shadow:
+    0 1px 0 #991b1b,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+</style>

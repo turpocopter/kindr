@@ -2,9 +2,9 @@
 import { computed, ref } from "vue";
 import ToyCard from "@/components/ToyCard.vue";
 import type { Toy } from "@/types/toy";
-import { useSound } from '@vueuse/sound'
-import want from '@/assets/want.mp3'
-import dontWant from '@/assets/dontWant.mp3'
+import { useSound } from "@vueuse/sound";
+import want from "@/assets/want.mp3";
+import dontWant from "@/assets/dontWant.mp3";
 
 const SWIPE_THRESHOLD = 80;
 
@@ -24,9 +24,7 @@ const leavingDirection = ref<"left" | "right" | null>(null);
 const wantSound = useSound(want, { volume: 1 });
 const dontWantSound = useSound(dontWant, { volume: 1 });
 
-const visibleCards = computed(() =>
-  props.toys.slice(0, 3),
-);
+const visibleCards = computed(() => props.toys.slice(0, 3));
 const topCard = computed(() => visibleCards.value[0] ?? null);
 
 // Progress 0→1 based on how far the top card has been dragged
@@ -161,7 +159,7 @@ const dislikeWithButton = (): void => {
       <div
         v-for="(toy, index) in visibleCards"
         :key="toy.id"
-        class="absolute inset-0 select-none"
+        class="absolute inset-0 select-none rounded-3xl overflow-hidden"
         :class="index === 0 ? 'z-30 touch-none' : index === 1 ? 'z-20' : 'z-10'"
         :style="index === 0 ? cardStyle : backgroundCardStyle(index)"
         @pointerdown="(e) => index === 0 && onPointerDown(e)"
@@ -189,18 +187,20 @@ const dislikeWithButton = (): void => {
     </div>
 
     <div
-      class="mx-auto mt-6 flex max-w-[320px] items-center justify-center gap-5"
+      class="mx-auto mt-6 flex max-w-[320px] items-center justify-center gap-16"
     >
       <button
         type="button"
-        class="min-h-11 rounded-full bg-red-500 px-7 py-4 text-3xl font-bold text-white shadow-lg transition hover:scale-105"
+        class="btn-plastic-red rounded-full bg-red-500 text-5xl text-white transition active:scale-95 active:translate-y-1"
+        style="width: 100px; height: 100px"
         @click="dislikeWithButton"
       >
         ☹️
       </button>
       <button
         type="button"
-        class="min-h-11 rounded-full bg-emerald-500 px-7 py-4 text-3xl font-bold text-white shadow-lg transition hover:scale-105"
+        class="btn-plastic-green rounded-full bg-emerald-500 text-5xl text-white transition active:scale-95 active:translate-y-1"
+        style="width: 100px; height: 100px"
         @click="likeWithButton"
       >
         ❤️
@@ -208,3 +208,55 @@ const dislikeWithButton = (): void => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.btn-plastic-green {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #10b981;
+  color: white;
+  box-shadow:
+    0 6px 0 #065f46,
+    0 7px 10px rgba(0, 0, 0, 0.25),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+}
+
+.btn-plastic-green:active {
+  box-shadow:
+    0 2px 0 #065f46,
+    0 3px 5px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-plastic-red {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #ef4444;
+  color: white;
+  box-shadow:
+    0 6px 0 #991b1b,
+    0 7px 10px rgba(0, 0, 0, 0.25),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+}
+
+.btn-plastic-red:active {
+  box-shadow:
+    0 2px 0 #991b1b,
+    0 3px 5px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+</style>

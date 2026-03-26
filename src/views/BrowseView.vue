@@ -92,30 +92,61 @@ const onLike = async (toy: Toy): Promise<void> => {
     class="min-h-screen bg-gradient-to-b from-sky-400 via-cyan-300 to-emerald-200 px-4 py-6"
   >
     <section class="mx-auto w-full max-w-md">
-      <header class="rounded-3xl bg-white/90 p-4 shadow-lg">
-        <div class="flex items-center gap-3">
-          <button
-            type="button"
-            class="flex shrink-0 items-center gap-1 rounded-full bg-fuchsia-500 px-3 py-2 text-m font-bold text-white shadow hover:bg-fuchsia-600"
-            @click="goBackHome"
-          >
-            ← 🏠
-          </button>
-          <template v-if="toyStore.myToy">
-            <div class="flex min-w-0 flex-1 items-center gap-2">
+      <header class="rounded-3xl bg-[#FFEA00] p-5 shadow-lg">
+        <div class="grid grid-cols-3 items-center">
+          <!-- Col 1 : bouton retour -->
+          <div class="flex justify-start">
+            <button
+              type="button"
+              class="btn-plastic-blue flex shrink-0 items-center gap-1 rounded-xl bg-blue-500 px-5 py-3 text-xl font-bold text-white transition active:scale-95 active:translate-y-1"
+              @click="goBackHome"
+            >
+              🏠
+            </button>
+          </div>
+
+          <!-- Col 2 : photo du jouet -->
+          <div class="flex justify-center">
+            <template v-if="toyStore.myToy">
               <img
                 :src="toyStore.myToy.photoUrl"
                 alt="Mon jouet"
-                class="h-10 w-10 shrink-0 rounded-xl object-cover"
+                class="h-14 w-14 rounded-full object-cover shadow-md ring-2 ring-white"
               />
+            </template>
+          </div>
+
+          <!-- Col 3 : panier + emojis -->
+          <div class="grid grid-cols-2 items-center">
+            <!-- panier -->
+            <div class="flex justify-center">
+              <template v-if="toyStore.myToy">
+                <h3 class="text-2xl font-bold">🧺</h3>
+              </template>
             </div>
-            <div class="shrink-0 text-right">
-              <h3 class="text-m font-bold text-slate-500">🧺</h3>
-              <span class="w-1/5 text-sm" v-for="index in toyStore.likedToys.length" :key="index">❤️</span>
-              <span class="w-1/5 text-sm" v-for="index in toyStore.dislikedToyIds.length" :key="index">😢</span>
-              <span class="w-1/5" v-for="index in remainingToys.length" :key="index">●</span>
+            <!-- emojis -->
+            <div class="flex flex-wrap justify-start">
+              <template v-if="toyStore.myToy">
+                <span
+                  class="text-sm"
+                  v-for="index in toyStore.likedToys.length"
+                  :key="'like-' + index"
+                  >❤️</span
+                >
+                <span
+                  class="text-sm"
+                  v-for="index in toyStore.dislikedToyIds.length"
+                  :key="'dislike-' + index"
+                  >😢</span
+                >
+                <span
+                  v-for="index in remainingToys.length"
+                  :key="'rem-' + index"
+                  >●</span
+                >
+              </template>
             </div>
-          </template>
+          </div>
         </div>
         <p v-if="toyStore.errorMessage" class="mt-2 text-center text-xs font-bold text-red-600">
           {{ toyStore.errorMessage }}
@@ -124,40 +155,44 @@ const onLike = async (toy: Toy): Promise<void> => {
 
       <section
         v-if="remainingToys.length === 0"
-        class="mt-8 rounded-3xl bg-white/90 p-8 text-center shadow-xl"
+        class="mt-8 rounded-3xl bg-[#FFEA00] p-8 text-center shadow-xl"
       >
         <p class="mt-3 text-5xl font-bold text-slate-900">
-           🏁
+          🏁
         </p>
 
         <template v-if="toyStore.dislikedToyIds.length > 0">
-          <button
-            type="button"
-            class="mt-6 min-h-11 rounded-full bg-emerald-400 px-8 py-4 text-xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
-            @click="resetDisliked()"
-          >
-            🔄
-          </button>
-          <button
-            type="button"
-            class="mt-3 min-h-11 rounded-full bg-fuchsia-500 px-8 py-4 text-xl font-bold text-white shadow-lg"
-            @click="goBackHome"
-          >
-            ← 🏠
-          </button>
+          <div class="mt-10 flex gap-4">
+            <button
+              type="button"
+              class="btn-plastic-green w-full min-h-14 rounded-xl bg-green-500 py-4 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1"
+              @click="resetDisliked()"
+            >
+              🔄
+            </button>
+            <button
+              type="button"
+              class="btn-plastic-blue w-full min-h-14 rounded-xl bg-blue-500 py-4 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1"
+              @click="goBackHome"
+            >
+              🏠
+            </button>
+          </div>
         </template>
 
         <template v-else>
           <p class="mt-2 text-base text-slate-500">
             ⏳
           </p>
-          <button
-            type="button"
-            class="mt-6 min-h-11 rounded-full bg-fuchsia-500 px-8 py-4 text-xl font-bold text-white shadow-lg"
-            @click="goBackHome"
-          >
-            ← 🏠
-          </button>
+          <div class="mt-10">
+            <button
+              type="button"
+              class="btn-plastic-blue w-full min-h-14 rounded-xl bg-blue-500 py-4 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1"
+              @click="goBackHome"
+            >
+              🏠
+            </button>
+          </div>
         </template>
       </section>
 
@@ -167,3 +202,80 @@ const onLike = async (toy: Toy): Promise<void> => {
     </section>
   </main>
 </template>
+
+<style scoped>
+.btn-plastic-red {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #ef4444;
+  color: white;
+  box-shadow:
+    0 4px 0 #991b1b,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+}
+
+.btn-plastic-red:active {
+  box-shadow:
+    0 1px 0 #991b1b,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-plastic-blue {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #3b82f6;
+  color: white;
+  box-shadow:
+    0 4px 0 #1d4ed8,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+}
+
+.btn-plastic-blue:active {
+  box-shadow:
+    0 1px 0 #1d4ed8,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-plastic-green {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #22c55e;
+  color: white;
+  box-shadow:
+    0 4px 0 #15803d,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+}
+
+.btn-plastic-green:active {
+  box-shadow:
+    0 1px 0 #15803d,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+</style>

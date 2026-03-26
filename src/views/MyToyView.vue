@@ -79,17 +79,16 @@ const saveToy = async (): Promise<void> => {
     class="min-h-screen bg-gradient-to-b from-orange-400 via-amber-300 to-yellow-200 px-5 py-8"
   >
     <section
-      class="mx-auto w-full max-w-md rounded-3xl bg-white/85 p-6 shadow-2xl"
+      class="mx-auto w-full max-w-md rounded-3xl bg-[#FFEA00] p-6 shadow-2xl"
     >
       <h1 class="text-center text-4xl font-bold text-slate-900">Ton jouet</h1>
 
       <label
         v-if="!photoPreview"
         for="toy-photo"
-        class="mt-8 flex min-h-11 w-full cursor-pointer flex-col items-center justify-center rounded-full bg-fuchsia-400 px-8 py-10 text-center text-3xl font-bold text-white shadow-lg"
+        class="toy-btn-plastic mt-8 flex min-h-11 w-full cursor-pointer flex-col items-center justify-center rounded-xl bg-yellow-400 px-8 py-10 text-center text-3xl font-bold text-white"
       >
         <span class="text-5xl">📷</span>
-        <span class="mt-2 text-2xl">Prends une photo</span>
       </label>
       <input
         id="toy-photo"
@@ -114,17 +113,17 @@ const saveToy = async (): Promise<void> => {
       >
         <button
           type="button"
-          class="min-h-11 flex-1 rounded-full bg-slate-200 px-6 py-4 text-xl font-bold text-slate-800 shadow transition hover:scale-[1.02]"
+          class="btn-plastic-red min-h-16 flex-1 rounded-xl bg-red-500 px-6 py-5 text-3xl font-bold text-white transition active:scale-95 active:translate-y-1"
           @click="retakePhoto"
         >
-          🔄 Reprendre
+          🔄
         </button>
         <button
           type="button"
-          class="min-h-11 flex-1 rounded-full bg-emerald-400 px-6 py-4 text-xl font-bold text-white shadow-lg transition hover:scale-[1.02]"
+          class="btn-plastic-green min-h-16 flex-1 rounded-xl bg-green-500 px-6 py-5 text-3xl font-bold text-white transition active:scale-95 active:translate-y-1"
           @click="confirmPhoto"
         >
-          ✅ Confirmer
+          ✅
         </button>
       </div>
 
@@ -135,13 +134,88 @@ const saveToy = async (): Promise<void> => {
 
         <button
           type="button"
-          class="mt-7 min-h-11 w-full rounded-full bg-emerald-400 px-8 py-4 text-2xl font-bold text-white shadow-lg transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+          class="btn-plastic-green mt-7 min-h-11 w-full rounded-xl bg-green-500 px-8 py-4 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1 disabled:cursor-not-allowed disabled:opacity-60"
           :disabled="isSaving"
           @click="saveToy"
         >
-          C'est parti ! 🚀
+          🚀
         </button>
       </template>
     </section>
   </main>
 </template>
+
+<style scoped>
+.toy-btn-plastic {
+  position: relative;
+  overflow: hidden;
+  color: white;
+  box-shadow:
+    0 4px 0 #ca8a04,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+}
+
+.toy-btn-plastic:active {
+  box-shadow:
+    0 1px 0 #ca8a04,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-plastic-green {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #22c55e;
+  color: white;
+  box-shadow:
+    0 4px 0 #15803d,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+}
+
+.btn-plastic-green:active {
+  box-shadow:
+    0 1px 0 #15803d,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-plastic-red {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #ef4444;
+  color: white;
+  box-shadow:
+    0 4px 0 #991b1b,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
+}
+
+.btn-plastic-red:active {
+  box-shadow:
+    0 1px 0 #991b1b,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+</style>
