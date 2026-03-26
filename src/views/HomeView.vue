@@ -21,12 +21,8 @@ const goToBrowse = (): void => {
     <section
       class="mx-auto flex w-full max-w-md flex-col items-center rounded-3xl bg-white/20 p-6 shadow-2xl backdrop-blur-sm"
     >
-      <h1 class="text-center text-5xl font-bold drop-shadow-lg">
-        🧸 Kindr
-      </h1>
-      <p class="mt-3 text-center text-xl font-bold">
-        Swipe. Match. Troque. 🤝
-      </p>
+      <h1 class="text-center text-5xl font-bold drop-shadow-lg">🧸 Kindr</h1>
+      <p class="mt-3 text-center text-xl font-bold">Swipe. Match. Troque. 🤝</p>
 
       <div
         v-if="toyStore.myToy"
