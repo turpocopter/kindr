@@ -47,14 +47,32 @@ const goToBrowse = (): void => {
         Ajouter mon jouet
       </button>
 
-      <button
-        v-else
-        type="button"
-        class="mt-8 min-h-11 rounded-full bg-emerald-300 px-8 py-4 text-2xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
-        @click="goToBrowse"
+      <section
+        v-if="toyStore.matches.length > 0"
+        class="mt-8 w-full rounded-3xl bg-white/90 p-5 text-slate-900 shadow-xl ring-2 ring-yellow-300"
       >
-        Parcourir les jouets
-      </button>
+        <h2 class="mb-4 text-xl font-bold text-fuchsia-700">
+          🎉 Tes matches ({{ toyStore.matches.length }})
+        </h2>
+        <ul class="flex flex-col gap-3">
+          <li
+            v-for="toy in toyStore.matches"
+            :key="toy.id"
+            class="flex cursor-pointer items-center gap-4 rounded-2xl bg-fuchsia-50 p-3 shadow transition hover:scale-[1.01]"
+            @click="router.push({ name: 'match', params: { toyId: toy.id } })"
+          >
+            <img
+              :src="toy.photoUrl"
+              :alt="toy.name"
+              class="h-16 w-16 rounded-2xl object-cover"
+            />
+            <div>
+              <p class="text-lg font-bold">{{ toy.name }}</p>
+              <p class="text-sm text-fuchsia-500 font-semibold">Voir le match ✨</p>
+            </div>
+          </li>
+        </ul>
+      </section>
 
       <section
         v-if="toyStore.likedToys.length > 0"
@@ -78,6 +96,15 @@ const goToBrowse = (): void => {
           </li>
         </ul>
       </section>
+
+      <button
+        v-if="toyStore.myToy"
+        type="button"
+        class="mt-8 min-h-11 rounded-full bg-emerald-300 px-8 py-4 text-2xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
+        @click="goToBrowse"
+      >
+        Parcourir les jouets
+      </button>
     </section>
   </main>
 </template>
