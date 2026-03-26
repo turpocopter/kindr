@@ -99,6 +99,10 @@ export const useToyStore = defineStore("toy", () => {
     }
   };
 
+  const resetDisliked = (): void => {
+    dislikedToyIds.value = [];
+  };
+
   return {
     myToy,
     availableToys,
@@ -109,5 +113,6 @@ export const useToyStore = defineStore("toy", () => {
     setMyToy,
     likeToy,
     dislikeToy,
+    resetDisliked,
   };
 });
