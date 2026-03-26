@@ -12,7 +12,6 @@ import again from '@/assets/again.mp3'
 const router = useRouter();
 const toyStore = useToyStore();
 const reactionLoading = ref<boolean>(false);
-const isDeletingToy = ref<boolean>(false);
 const notAnymoreSound = useSound(notAnymore, { volume: 1 });
 const againSound = useSound(again, { volume: 1 });
 
