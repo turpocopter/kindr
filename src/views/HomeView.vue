@@ -22,10 +22,10 @@ const goToBrowse = (): void => {
       class="mx-auto flex w-full max-w-md flex-col items-center rounded-3xl bg-white/20 p-6 shadow-2xl backdrop-blur-sm"
     >
       <h1 class="text-center text-5xl font-bold drop-shadow-lg">
-        🧸 TrocTroc !
+        🧸 Kindr
       </h1>
       <p class="mt-3 text-center text-xl font-bold">
-        Troque tes jouets avec d'autres enfants
+        Swipe. Match. Troque. 🤝
       </p>
 
       <div
