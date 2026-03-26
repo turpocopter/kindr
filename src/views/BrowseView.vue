@@ -43,22 +43,6 @@ const resetDisliked = (): void => {
   toyStore.resetDisliked();
 }
 
-const deleteCurrentToy = async (): Promise<void> => {
-  if (isDeletingToy.value) {
-    return;
-  }
-
-  isDeletingToy.value = true;
-  try {
-    await toyStore.deleteMyToy();
-    await router.push({ name: "myToy" });
-  } catch {
-    // Store state keeps the latest error message.
-  } finally {
-    isDeletingToy.value = false;
-  }
-};
-
 const playNotAnymoreSound = async () => {
   console.log("playing sound");
   await setTimeout(() => notAnymoreSound.play(), 1000);

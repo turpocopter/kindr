@@ -17,7 +17,6 @@ const emit = defineEmits<{
   dislike: [toy: Toy];
 }>();
 
-const activeIndex = ref<number>(0);
 const startX = ref<number>(0);
 const isDragging = ref<boolean>(false);
 const translateX = ref<number>(0);
