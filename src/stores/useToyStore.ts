@@ -4,57 +4,63 @@ import type { Toy } from "@/types/toy";
 
 const MOCK_TOYS: Toy[] = [
   {
-    id: "toy-1",
-    name: "LEGO City 🏙️",
-    photoUrl: "https://picsum.photos/300/400?random=1",
-    ownerId: "child-01",
-  },
-  {
-    id: "toy-2",
-    name: "Dinosaure Rex 🦕",
-    photoUrl: "https://picsum.photos/300/400?random=2",
-    ownerId: "child-02",
-  },
-  {
-    id: "toy-3",
-    name: "Poupée Emma 🪆",
-    photoUrl: "https://picsum.photos/300/400?random=3",
-    ownerId: "child-03",
-  },
-  {
-    id: "toy-4",
-    name: "Voiture Flash ⚡",
-    photoUrl: "https://picsum.photos/300/400?random=4",
-    ownerId: "child-04",
-  },
-  {
-    id: "toy-5",
-    name: "Peluche Koala 🐨",
-    photoUrl: "https://picsum.photos/300/400?random=5",
-    ownerId: "child-05",
-  },
-  {
-    id: "toy-6",
-    name: "Puzzle Animaux 🧩",
-    photoUrl: "https://picsum.photos/300/400?random=6",
-    ownerId: "child-06",
-  },
-  {
-    id: "toy-7",
-    name: "Jeu Cartes Pokémon ✨",
-    photoUrl: "https://picsum.photos/300/400?random=7",
-    ownerId: "child-07",
-  },
-  {
-    id: "toy-8",
-    name: "Robot Danseur 🤖",
-    photoUrl: "https://picsum.photos/300/400?random=8",
-    ownerId: "child-08",
-  },
-  {
     id: "toy-9",
     name: "voiture-bois-klaxon",
     photoUrl: "https://www.jeu-montessori.fr/7736-large_default/voiture-bois-klaxon.jpg",
+    ownerId: "child-08",
+  },
+  {
+    id: "toy-10",
+    name: "jouet-dinosaure-nic-nac-tyrannosaure",
+    photoUrl: "https://www.maisonludique.com/134348-large_default/jouet-dinosaure-nic-nac-tyrannosaure.jpg",
+    ownerId: "child-08",
+  },
+  {
+    id: "toy-11",
+    name: "sophie-la-girafe-jouet-d-eveil-sophie-la-girafe_SLG00001_0_1",
+    photoUrl: "https://www.baby-lux.com/media/catalog/product/cache/45f4f755edda6da9b7e5efa8a966a136/s/o/sophie-la-girafe-jouet-d-eveil-sophie-la-girafe_SLG00001_0_1.jpg",
+    ownerId: "child-08",
+  },
+  {
+    id: "toy-12",
+    name: "jouet-robot-vintage-1_1080x",
+    photoUrl: "https://planete-vintage.com/cdn/shop/products/jouet-robot-vintage-1_1080x.jpg?v=1604658679",
+    ownerId: "child-08",
+  },
+  {
+    id: "toy-13",
+    name: "39536-peluche-lapin-belier-18cm-4-couleurs_1_",
+    photoUrl: "https://www.lepetitsouk.fr/media/catalog/product/cache/cbbdd6815528187f8ac75af67ab835d1/3/9/39536-peluche-lapin-belier-18cm-4-couleurs_1_.jpg",
+    ownerId: "child-08",
+  },
+  {
+    id: "toy-14",
+    name: "baby-walker-3-en-1-poupon-little-smoby-7600140308_00",
+    photoUrl: "https://middleware.simba-dickie.com/media/shop-dickietamiya/products/7600140308/00/overview_2020/baby-walker-3-en-1-poupon-little-smoby-7600140308_00.jpeg?v=1688046698",
+    ownerId: "child-08",
+  },
+  {
+    id: "toy-15",
+    name: "horse-toy",
+    photoUrl: "https://shopeu.ponycycle.com/fr/collections/horse-toy?srsltid=AfmBOoqBDX-slwcVcMOjB2adFd-HX-7dbUmPM5A7ENVeqfuOClZF-ZRf",
+    ownerId: "child-08",
+  },
+  {
+    id: "toy-16",
+    name: "ANd9GcRLbjHW-TNxa4MELHdTR_03I8BZA1jolmVI7w",
+    photoUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLbjHW-TNxa4MELHdTR_03I8BZA1jolmVI7w&s",
+    ownerId: "child-08",
+  },
+  {
+    id: "toy-17",
+    name: "figurine-pegase",
+    photoUrl: "https://lesminis.fr/8173-large_default/figurine-pegase.jpg",
+    ownerId: "child-08",
+  },
+  {
+    id: "toy-18",
+    name: "tovdgrv1iylj",
+    photoUrl: "https://i.makeup.be/t/to/tovdgrv1iylj.jpg",
     ownerId: "child-08",
   },
 ];
