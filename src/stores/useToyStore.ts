@@ -51,6 +51,12 @@ const MOCK_TOYS: Toy[] = [
     photoUrl: "https://picsum.photos/300/400?random=8",
     ownerId: "child-08",
   },
+  {
+    id: "toy-9",
+    name: "voiture-bois-klaxon",
+    photoUrl: "https://www.jeu-montessori.fr/7736-large_default/voiture-bois-klaxon.jpg",
+    ownerId: "child-08",
+  },
 ];
 
 export const useToyStore = defineStore("toy", () => {
