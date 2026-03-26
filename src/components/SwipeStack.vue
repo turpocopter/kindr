@@ -14,16 +14,21 @@ const emit = defineEmits<{
   dislike: [toy: Toy];
 }>();
 
-const activeIndex = ref<number>(0);
 const startX = ref<number>(0);
 const isDragging = ref<boolean>(false);
 const translateX = ref<number>(0);
 const leavingDirection = ref<"left" | "right" | null>(null);
 
 const visibleCards = computed(() =>
-  props.toys.slice(activeIndex.value, activeIndex.value + 3),
+  props.toys.slice(0, 3),
 );
 const topCard = computed(() => visibleCards.value[0] ?? null);
+
+// Progress 0→1 based on how far the top card has been dragged
+const swipeProgress = computed(() => {
+  if (leavingDirection.value) return 1;
+  return Math.min(Math.abs(translateX.value) / SWIPE_THRESHOLD, 1);
+});
 
 const cardStyle = computed(() => {
   const rotation = translateX.value / 16;
@@ -44,6 +49,30 @@ const cardStyle = computed(() => {
   };
 });
 
+const backgroundCardStyle = (index: number) => {
+  const progress = swipeProgress.value;
+  // Interpolate from stacked position toward the position one step closer
+  const fromY = index * 10;
+  const toY = (index - 1) * 10;
+  const fromScale = 1 - index * 0.04;
+  const toScale = 1 - (index - 1) * 0.04;
+
+  const y = fromY + (toY - fromY) * progress;
+  const scale = fromScale + (toScale - fromScale) * progress;
+
+  const transition =
+    isDragging.value && !leavingDirection.value
+      ? "none"
+      : leavingDirection.value
+        ? "transform 230ms ease"
+        : "transform 240ms ease";
+
+  return {
+    transform: `translateY(${y}px) scale(${scale})`,
+    transition,
+  };
+};
+
 const likeOpacity = computed(() =>
   translateX.value > 0 ? Math.min(translateX.value / 120, 1) : 0,
 );
@@ -54,7 +83,6 @@ const dislikeOpacity = computed(() =>
 const nextCard = (): void => {
   translateX.value = 0;
   leavingDirection.value = null;
-  activeIndex.value += 1;
 };
 
 const triggerAction = (direction: "left" | "right"): void => {
@@ -132,14 +160,7 @@ const dislikeWithButton = (): void => {
         :key="toy.id"
         class="absolute inset-0 select-none"
         :class="index === 0 ? 'z-30 touch-none' : index === 1 ? 'z-20' : 'z-10'"
-        :style="
-          index === 0
-            ? cardStyle
-            : {
-                transform: `translateY(${index * 10}px) scale(${1 - index * 0.04})`,
-                transition: 'transform 240ms ease',
-              }
-        "
+        :style="index === 0 ? cardStyle : backgroundCardStyle(index)"
         @pointerdown="(e) => index === 0 && onPointerDown(e)"
         @pointermove="(e) => index === 0 && onPointerMove(e)"
         @pointerup="() => index === 0 && onPointerUp()"
