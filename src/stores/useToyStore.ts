@@ -41,8 +41,8 @@ const MOCK_TOYS: Toy[] = [
   },
   {
     id: "toy-15",
-    name: "horse-toy",
-    photoUrl: "https://shopeu.ponycycle.com/fr/collections/horse-toy?srsltid=AfmBOoqBDX-slwcVcMOjB2adFd-HX-7dbUmPM5A7ENVeqfuOClZF-ZRf",
+    name: "B0CBQTVK7H",
+    photoUrl: "https://www.amazon.fr/lUnivers-articul%C3%A9e-collection-mini-bande-HYD17/dp/B0CBQTVK7H",
     ownerId: "child-08",
   },
   {
