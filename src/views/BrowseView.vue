@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import SwipeStack from "@/components/SwipeStack.vue";
 import { useToyStore } from "@/stores/useToyStore";
@@ -7,6 +7,17 @@ import type { Toy } from "@/types/toy";
 
 const router = useRouter();
 const toyStore = useToyStore();
+const reactionLoading = ref<boolean>(false);
+
+onMounted(async () => {
+  if (!toyStore.isAuthenticated) {
+    await toyStore.initialize();
+  }
+
+  if (!toyStore.isAuthenticated || !toyStore.myToy) {
+    await router.replace({ name: "home" });
+  }
+});
 
 const remainingToys = computed(() =>
   toyStore.availableToys.filter(
@@ -20,14 +31,36 @@ const goBackHome = (): void => {
   router.push({ name: "home" });
 };
 
-const onDislike = (toy: Toy): void => {
-  toyStore.dislikeToy(toy.id);
+const onDislike = async (toy: Toy): Promise<void> => {
+  if (reactionLoading.value) {
+    return;
+  }
+
+  reactionLoading.value = true;
+  try {
+    await toyStore.dislikeToy(toy.id);
+  } catch {
+    // Store state keeps the latest error message.
+  } finally {
+    reactionLoading.value = false;
+  }
 };
 
-const onLike = (toy: Toy): void => {
-  const isMatch = toyStore.likeToy(toy);
-  if (isMatch) {
-    router.push({ name: "match", params: { toyId: toy.id } });
+const onLike = async (toy: Toy): Promise<void> => {
+  if (reactionLoading.value) {
+    return;
+  }
+
+  reactionLoading.value = true;
+  try {
+    const isMatch = await toyStore.likeToy(toy);
+    if (isMatch) {
+      router.push({ name: "match", params: { toyId: toy.id } });
+    }
+  } catch {
+    // Store state keeps the latest error message.
+  } finally {
+    reactionLoading.value = false;
   }
 };
 </script>
@@ -50,12 +83,9 @@ const onLike = (toy: Toy): void => {
             <div class="flex min-w-0 flex-1 items-center gap-2">
               <img
                 :src="toyStore.myToy.photoUrl"
-                :alt="toyStore.myToy.name"
+                alt="Mon jouet"
                 class="h-10 w-10 shrink-0 rounded-xl object-cover"
               />
-              <p class="truncate text-sm font-bold text-slate-900">
-                {{ toyStore.myToy.name }}
-              </p>
             </div>
             <div class="shrink-0 text-right">
               <p class="text-xs font-bold text-slate-500">Restants</p>
@@ -65,6 +95,9 @@ const onLike = (toy: Toy): void => {
         </div>
         <p class="mt-2 text-center text-xs font-bold text-slate-500">
           ❤️ {{ toyStore.likedToys.length }} mis de côté
+        </p>
+        <p v-if="toyStore.errorMessage" class="mt-2 text-center text-xs font-bold text-red-600">
+          {{ toyStore.errorMessage }}
         </p>
       </header>
 

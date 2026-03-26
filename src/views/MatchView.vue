@@ -8,6 +8,16 @@ const route = useRoute();
 const router = useRouter();
 const toyStore = useToyStore();
 
+onMounted(async () => {
+  if (!toyStore.isAuthenticated) {
+    await toyStore.initialize();
+  }
+
+  if (!toyStore.isAuthenticated) {
+    await router.replace({ name: "home" });
+  }
+});
+
 const matchToy = computed(() => {
   const toyId = String(route.params.toyId);
   return toyStore.matches.find((toy) => toy.id === toyId) ?? null;
@@ -79,24 +89,18 @@ onMounted(() => {
           <p class="text-sm font-bold text-slate-700">Ton jouet</p>
           <img
             :src="toyStore.myToy.photoUrl"
-            :alt="toyStore.myToy.name"
+            alt="Mon jouet"
             class="mt-2 h-40 w-full rounded-2xl object-cover"
           />
-          <p class="mt-2 text-base font-bold text-slate-900">
-            {{ toyStore.myToy.name }}
-          </p>
         </article>
 
         <article class="rounded-3xl bg-emerald-100 p-3 shadow-lg">
           <p class="text-sm font-bold text-slate-700">Jouet matché</p>
           <img
             :src="matchToy.photoUrl"
-            :alt="matchToy.name"
+            alt="Jouet matché"
             class="mt-2 h-40 w-full rounded-2xl object-cover"
           />
-          <p class="mt-2 text-base font-bold text-slate-900">
-            {{ matchToy.name }}
-          </p>
         </article>
       </div>
 
