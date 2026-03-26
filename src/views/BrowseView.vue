@@ -6,12 +6,14 @@ import { useToyStore } from "@/stores/useToyStore";
 import type { Toy } from "@/types/toy";
 import { useSound } from '@vueuse/sound'
 import notAnymore from '@/assets/notAnymore.mp3'
-
+import again from '@/assets/again.mp3'
 
 const router = useRouter();
 const toyStore = useToyStore();
 const reactionLoading = ref<boolean>(false);
 const notAnymoreSound = useSound(notAnymore, { volume: 1 });
+
+const againSound = useSound(again, { volume: 1 });
 
 onMounted(async () => {
   if (!toyStore.isAuthenticated) {
