@@ -40,3 +40,5 @@ npm run dev
 - Le bucket storage utilise le nom `toy-photos`.
 - Les policies RLS autorisent uniquement la creation/mise a jour/suppression de ses propres produits et reactions.
 - Les photos sont publiques en lecture pour simplifier le MVP.
+
+Youpi.
