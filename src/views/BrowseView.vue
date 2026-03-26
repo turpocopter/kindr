@@ -136,7 +136,7 @@ const onLike = async (toy: Toy): Promise<void> => {
           <button
             type="button"
             class="mt-6 min-h-11 rounded-full bg-emerald-400 px-8 py-4 text-xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
-            @click="toyStore.resetDisliked()"
+            @click="resetDisliked()"
           >
             🔄 Revoir les refusés
           </button>
