@@ -2,6 +2,9 @@
 import { computed, ref } from "vue";
 import ToyCard from "@/components/ToyCard.vue";
 import type { Toy } from "@/types/toy";
+import { useSound } from '@vueuse/sound'
+import want from '@/assets/want.mp3'
+import dontWant from '@/assets/dontWant.mp3'
 
 const SWIPE_THRESHOLD = 80;
 
@@ -14,10 +17,13 @@ const emit = defineEmits<{
   dislike: [toy: Toy];
 }>();
 
+const activeIndex = ref<number>(0);
 const startX = ref<number>(0);
 const isDragging = ref<boolean>(false);
 const translateX = ref<number>(0);
 const leavingDirection = ref<"left" | "right" | null>(null);
+const wantSound = useSound(want, { volume: 1 });
+const dontWantSound = useSound(dontWant, { volume: 1 });
 
 const visibleCards = computed(() =>
   props.toys.slice(0, 3),
@@ -95,8 +101,10 @@ const triggerAction = (direction: "left" | "right"): void => {
   window.setTimeout(() => {
     if (direction === "right") {
       emit("like", toy);
+      wantSound.play();
     } else {
       emit("dislike", toy);
+      dontWantSound.play();
     }
     nextCard();
   }, 230);
