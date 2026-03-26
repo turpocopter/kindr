@@ -36,21 +36,10 @@ const goBackHome = (): void => {
   router.push({ name: "home" });
 };
 
-const deleteCurrentToy = async (): Promise<void> => {
-  if (isDeletingToy.value) {
-    return;
-  }
-
-  isDeletingToy.value = true;
-  try {
-    await toyStore.deleteMyToy();
-    await router.push({ name: "myToy" });
-  } catch {
-    // Store state keeps the latest error message.
-  } finally {
-    isDeletingToy.value = false;
-  }
-};
+const resetDisliked = (): void => {
+  againSound.play();
+  toyStore.resetDisliked();
+}
 
 const playNotAnymoreSound = async () => {
   console.log("playing sound");
