@@ -126,7 +126,7 @@ const dislikeWithButton = (): void => {
 
 <template>
   <div class="w-full">
-    <div class="relative mx-auto h-[440px] w-full max-w-[320px]">
+    <div class="relative mx-auto h-[360px] w-full max-w-[320px]">
       <div
         v-for="(toy, index) in visibleCards"
         :key="toy.id"
@@ -173,14 +173,14 @@ const dislikeWithButton = (): void => {
         class="min-h-11 rounded-full bg-red-500 px-7 py-4 text-3xl font-bold text-white shadow-lg transition hover:scale-105"
         @click="dislikeWithButton"
       >
-        ❌
+        Veux pas !
       </button>
       <button
         type="button"
         class="min-h-11 rounded-full bg-emerald-500 px-7 py-4 text-3xl font-bold text-white shadow-lg transition hover:scale-105"
         @click="likeWithButton"
       >
-        ✅
+        Veux !
       </button>
     </div>
   </div>

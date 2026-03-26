@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import type { Toy } from "@/types/toy";
 
 const MOCK_TOYS: Toy[] = [
@@ -60,6 +60,10 @@ export const useToyStore = defineStore("toy", () => {
   const dislikedToyIds = ref<string[]>([]);
   const matches = ref<Toy[]>([]);
 
+  const likedToys = computed(() =>
+    availableToys.value.filter((toy) => likedToyIds.value.includes(toy.id)),
+  );
+
   const setMyToy = (toy: Toy): void => {
     myToy.value = toy;
   };
@@ -86,6 +90,7 @@ export const useToyStore = defineStore("toy", () => {
   return {
     myToy,
     availableToys,
+    likedToys,
     likedToyIds,
     dislikedToyIds,
     matches,
