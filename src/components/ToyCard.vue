@@ -8,12 +8,12 @@ defineProps<{
 
 <template>
   <article
-    class="relative h-full w-full overflow-hidden rounded-3xl shadow-2xl"
+    class="relative h-full w-full overflow-hidden rounded-3xl shadow-2xl bg-white"
   >
     <img
       :src="toy.photoUrl"
       alt="Photo du jouet"
-      class="h-full w-full object-cover pointer-events-none"
+      class="h-full w-full object-contain pointer-events-none"
       draggable="false"
     />
   </article>

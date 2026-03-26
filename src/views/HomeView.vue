@@ -333,7 +333,11 @@ const goToLikedToy = async (toyId: string): Promise<void> => {
 .toy-btn-plastic {
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 55%);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
   box-shadow:
     0 4px 0 #ca8a04,
     0 5px 7px rgba(0, 0, 0, 0.2),
@@ -353,7 +357,11 @@ const goToLikedToy = async (toyId: string): Promise<void> => {
   overflow: hidden;
   isolation: isolate;
   background-color: #22c55e;
-  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 55%);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
   color: white;
   box-shadow:
     0 4px 0 #15803d,
@@ -374,7 +382,11 @@ const goToLikedToy = async (toyId: string): Promise<void> => {
   overflow: hidden;
   isolation: isolate;
   background-color: #ef4444;
-  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 55%);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
   color: white;
   box-shadow:
     0 4px 0 #991b1b,
