@@ -63,6 +63,24 @@ const MOCK_TOYS: Toy[] = [
     photoUrl: "https://i.makeup.be/t/to/tovdgrv1iylj.jpg",
     ownerId: "child-08",
   },
+  {
+    id: "toy-19",
+    name: "pog",
+    photoUrl: "https://www.generation-souvenirs.com/7405-large_default/pog-animaniacs-sachet-de-4-pog-1-kini.jpg",
+    ownerId: "child-08",
+  },
+  {
+    id: "toy-20",
+    name: "l-anniversaire-de-winnie-lourson-lego-duplo",
+    photoUrl: "https://apiculture-remuaux.fr/4448-large_default/l-anniversaire-de-winnie-lourson-lego-duplo.webp",
+    ownerId: "child-08",
+  },
+  {
+    id: "toy-21",
+    name: "9438f395347d0d8487f401799a990055d3b8b116_original",
+    photoUrl: "https://img.joomcdn.net/9438f395347d0d8487f401799a990055d3b8b116_original.jpeg",
+    ownerId: "child-08",
+  },
 ];
 
 export const useToyStore = defineStore("toy", () => {
