@@ -7,7 +7,7 @@ body {
   overflow-x: clip;
   touch-action: pan-y;
   @apply m-0 min-h-screen text-slate-900;
-  font-family: "Comic Sans MS", "Chalkboard SE", cursive;
+  font-family: "Schoolbell", cursive;
 }
 
 #app {

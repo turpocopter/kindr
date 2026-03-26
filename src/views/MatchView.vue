@@ -120,12 +120,12 @@ onMounted(() => {
 
 <template>
   <main
-    class="relative min-h-screen w-full touch-pan-y overflow-hidden bg-gradient-to-br from-fuchsia-500 via-pink-400 to-yellow-300 px-4 py-8"
+    class="relative min-h-screen w-full touch-pan-y overflow-hidden bg-blue-500 px-4 py-8"
   >
     <section
-      class="relative mx-auto w-full max-w-3xl rounded-3xl bg-white/90 p-6 text-center shadow-2xl ring-4 ring-yellow-200"
+      class="relative mx-auto w-full max-w-3xl rounded-3xl bg-slate-50 p-6 text-center shadow-2xl ring-4 ring-yellow-400"
     >
-      <h1 class="animate-bounce text-5xl font-bold text-fuchsia-600">
+      <h1 class="animate-bounce text-5xl font-bold text-red-500">
         🎉 C'est un match !
       </h1>
 
@@ -133,7 +133,7 @@ onMounted(() => {
         v-if="toyStore.myToy && matchToy"
         class="mt-8 grid grid-cols-2 gap-4"
       >
-        <article class="rounded-3xl bg-amber-100 p-3 shadow-lg">
+        <article class="rounded-3xl bg-yellow-100 p-3 shadow-lg">
           <p class="text-sm font-bold text-slate-700">Ton jouet</p>
           <img
             :src="toyStore.myToy.photoUrl"
@@ -142,7 +142,7 @@ onMounted(() => {
           />
         </article>
 
-        <article class="rounded-3xl bg-emerald-100 p-3 shadow-lg">
+        <article class="rounded-3xl bg-blue-100 p-3 shadow-lg">
           <p class="text-sm font-bold text-slate-700">Jouet matché</p>
           <img
             :src="matchToy.photoUrl"
@@ -157,9 +157,9 @@ onMounted(() => {
       </p>
 
       <section
-        class="mt-8 rounded-3xl bg-white/80 p-5 text-left ring-2 ring-fuchsia-200"
+        class="mt-8 rounded-3xl bg-slate-50 p-5 text-left ring-2 ring-blue-200"
       >
-        <h2 class="text-center text-2xl font-extrabold text-fuchsia-700">
+        <h2 class="text-center text-2xl font-extrabold text-blue-700">
           📦 Récupérer le jouet
         </h2>
 
@@ -177,7 +177,7 @@ onMounted(() => {
               class="flex transform flex-col items-center rounded-2xl p-3 text-center ring-2 transition duration-200"
               :class="
                 selectedWhere === option.key
-                  ? 'ring-fuchsia-500 bg-fuchsia-50 shadow-lg'
+                  ? 'ring-blue-500 bg-blue-50 shadow-lg'
                   : 'ring-transparent bg-slate-100'
               "
               @click="selectWhere(option.key)"
@@ -208,7 +208,7 @@ onMounted(() => {
               class="flex transform flex-col items-center rounded-2xl p-3 text-center ring-2 transition duration-200"
               :class="
                 selectedWhen === option.key
-                  ? 'ring-fuchsia-500 bg-fuchsia-50 shadow-lg'
+                  ? 'ring-blue-500 bg-blue-50 shadow-lg'
                   : 'ring-transparent bg-slate-100'
               "
               @click="selectWhen(option.key)"
@@ -228,7 +228,7 @@ onMounted(() => {
 
       <button
         type="button"
-        class="mt-8 min-h-11 rounded-full bg-fuchsia-500 px-8 py-4 text-2xl font-bold text-white shadow-lg"
+        class="mt-8 min-h-11 rounded-full bg-green-500 px-8 py-4 text-2xl font-bold text-white shadow-lg"
         @click="continueBrowsing"
       >
         Continuer à parcourir

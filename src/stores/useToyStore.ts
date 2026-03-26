@@ -4,15 +4,45 @@ import type { Session } from "@supabase/supabase-js";
 import type { Toy } from "@/types/toy";
 import { supabase } from "@/lib/supabase";
 
-const BYPASS_AUTH = import.meta.env.VITE_AUTH_BYPASS === 'true';
+const BYPASS_AUTH = import.meta.env.VITE_AUTH_BYPASS === "true";
 
 const MOCK_TOYS_BYPASS: Toy[] = [
-  { id: 'mock-1', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=10', createdAt: '' },
-  { id: 'mock-2', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=20', createdAt: '' },
-  { id: 'mock-3', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=30', createdAt: '' },
-  { id: 'mock-4', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=40', createdAt: '' },
-  { id: 'mock-5', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=50', createdAt: '' },
-  { id: 'mock-6', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=60', createdAt: '' },
+  {
+    id: "mock-1",
+    ownerId: "bypass-other",
+    photoUrl: "https://picsum.photos/300/400?random=10",
+    createdAt: "",
+  },
+  {
+    id: "mock-2",
+    ownerId: "bypass-other",
+    photoUrl: "https://picsum.photos/300/400?random=20",
+    createdAt: "",
+  },
+  {
+    id: "mock-3",
+    ownerId: "bypass-other",
+    photoUrl: "https://picsum.photos/300/400?random=30",
+    createdAt: "",
+  },
+  {
+    id: "mock-4",
+    ownerId: "bypass-other",
+    photoUrl: "https://picsum.photos/300/400?random=40",
+    createdAt: "",
+  },
+  {
+    id: "mock-5",
+    ownerId: "bypass-other",
+    photoUrl: "https://picsum.photos/300/400?random=50",
+    createdAt: "",
+  },
+  {
+    id: "mock-6",
+    ownerId: "bypass-other",
+    photoUrl: "https://picsum.photos/300/400?random=60",
+    createdAt: "",
+  },
 ];
 
 type ProductRow = {
@@ -36,7 +66,9 @@ const PROFILES_KEY = "kindr_profiles";
 
 const loadStoredProfiles = (): StoredProfile[] => {
   try {
-    return JSON.parse(localStorage.getItem(PROFILES_KEY) ?? "[]") as StoredProfile[];
+    return JSON.parse(
+      localStorage.getItem(PROFILES_KEY) ?? "[]",
+    ) as StoredProfile[];
   } catch {
     return [];
   }
@@ -102,12 +134,12 @@ export const useToyStore = defineStore("toy", () => {
     if (BYPASS_AUTH) {
       session.value = {
         user: {
-          id: 'bypass-user-id',
-          email: 'dev@bypass.local',
+          id: "bypass-user-id",
+          email: "dev@bypass.local",
           app_metadata: {},
           user_metadata: {},
-          aud: 'authenticated',
-          created_at: '',
+          aud: "authenticated",
+          created_at: "",
         },
       } as unknown as Session;
       availableToys.value = MOCK_TOYS_BYPASS;
@@ -132,7 +164,8 @@ export const useToyStore = defineStore("toy", () => {
       }
 
       const userId = session.value.user.id;
-      currentProfile.value = storedProfiles.value.find((p) => p.userId === userId) ?? null;
+      currentProfile.value =
+        storedProfiles.value.find((p) => p.userId === userId) ?? null;
 
       await loadMyToy();
       await loadAvailableToys();
@@ -144,7 +177,10 @@ export const useToyStore = defineStore("toy", () => {
     }
   };
 
-  const createProfile = async (prenom: string, avatar: string): Promise<void> => {
+  const createProfile = async (
+    prenom: string,
+    avatar: string,
+  ): Promise<void> => {
     await runAction(async () => {
       const { data, error } = await supabase.auth.signInAnonymously();
       if (error) {
@@ -188,21 +224,35 @@ export const useToyStore = defineStore("toy", () => {
         access_token: profile.accessToken,
         refresh_token: profile.refreshToken,
       });
-      if (error) {
-        throw error;
-      }
-      if (!data.session) {
-        throw new Error("Session invalide");
-      }
 
-      // Mise à jour des tokens au cas où ils ont été rafraîchis
-      profile.accessToken = data.session.access_token;
-      profile.refreshToken = data.session.refresh_token;
-      saveStoredProfiles(profiles);
-      storedProfiles.value = profiles;
+      if (error || !data.session) {
+        // Token expiré — créer une nouvelle session anonyme et mettre à jour les tokens
+        const { data: anonData, error: anonError } =
+          await supabase.auth.signInAnonymously();
+        if (anonError || !anonData.session) {
+          throw new Error("Impossible de restaurer la session");
+        }
 
-      session.value = data.session;
-      currentProfile.value = profile;
+        // Mettre à jour les tokens du profil existant
+        profile.accessToken = anonData.session.access_token;
+        profile.refreshToken = anonData.session.refresh_token;
+        // Conserver le userId d'origine pour retrouver les données
+        profile.userId = anonData.session.user.id;
+        saveStoredProfiles(profiles);
+        storedProfiles.value = profiles;
+
+        session.value = anonData.session;
+        currentProfile.value = profile;
+      } else {
+        // Mise à jour des tokens rafraîchis
+        profile.accessToken = data.session.access_token;
+        profile.refreshToken = data.session.refresh_token;
+        saveStoredProfiles(profiles);
+        storedProfiles.value = profiles;
+
+        session.value = data.session;
+        currentProfile.value = profile;
+      }
 
       await loadMyToy();
       await loadAvailableToys();
@@ -334,9 +384,10 @@ export const useToyStore = defineStore("toy", () => {
     }
 
     const extension = file.name.split(".").pop() ?? "jpg";
-    const uuid = typeof crypto.randomUUID === 'function'
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const uuid =
+      typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const objectPath = `${currentUser.value.id}/${uuid}.${extension}`;
 
     const { error: uploadError } = await supabase.storage
@@ -350,15 +401,17 @@ export const useToyStore = defineStore("toy", () => {
       throw uploadError;
     }
 
-    const { data } = supabase.storage.from("toy-photos").getPublicUrl(objectPath);
+    const { data } = supabase.storage
+      .from("toy-photos")
+      .getPublicUrl(objectPath);
     return data.publicUrl;
   };
 
   const createMyToy = async (file: File): Promise<void> => {
     if (BYPASS_AUTH) {
       myToy.value = {
-        id: 'mock-my-toy',
-        ownerId: 'bypass-user-id',
+        id: "mock-my-toy",
+        ownerId: "bypass-user-id",
         photoUrl: URL.createObjectURL(file),
         createdAt: new Date().toISOString(),
       };
@@ -395,7 +448,9 @@ export const useToyStore = defineStore("toy", () => {
 
       await loadReactions();
       if (matches.value.length > 0) {
-        throw new Error("Tu ne peux pas supprimer un jouet qui a deja un match");
+        throw new Error(
+          "Tu ne peux pas supprimer un jouet qui a deja un match",
+        );
       }
 
       const toyIdToDelete = myToy.value.id;
@@ -444,7 +499,9 @@ export const useToyStore = defineStore("toy", () => {
       if (!likedToyIds.value.includes(targetToyId)) {
         likedToyIds.value.push(targetToyId);
       }
-      dislikedToyIds.value = dislikedToyIds.value.filter((id) => id !== targetToyId);
+      dislikedToyIds.value = dislikedToyIds.value.filter(
+        (id) => id !== targetToyId,
+      );
     } else {
       if (!dislikedToyIds.value.includes(targetToyId)) {
         dislikedToyIds.value.push(targetToyId);
@@ -468,7 +525,9 @@ export const useToyStore = defineStore("toy", () => {
 
     const isMatch = Boolean(data);
     if (isMatch) {
-      const matchedToy = availableToys.value.find((toy) => toy.id === targetToyId);
+      const matchedToy = availableToys.value.find(
+        (toy) => toy.id === targetToyId,
+      );
       if (matchedToy && !matches.value.some((toy) => toy.id === targetToyId)) {
         matches.value.push(matchedToy);
       }
@@ -508,6 +567,40 @@ export const useToyStore = defineStore("toy", () => {
     dislikedToyIds.value = [];
   };
 
+  const unlikeToy = async (toyId: string): Promise<void> => {
+    if (BYPASS_AUTH) {
+      likedToyIds.value = likedToyIds.value.filter((id) => id !== toyId);
+      return;
+    }
+
+    // Mise à jour optimiste
+    likedToyIds.value = likedToyIds.value.filter((id) => id !== toyId);
+
+    try {
+      await runAction(async () => {
+        if (!myToy.value) {
+          throw new Error("No toy found");
+        }
+
+        const { error } = await supabase
+          .from("product_reactions")
+          .delete()
+          .eq("source_product_id", myToy.value.id)
+          .eq("target_product_id", toyId);
+
+        if (error) {
+          throw error;
+        }
+      });
+    } catch (error) {
+      // Rollback
+      if (!likedToyIds.value.includes(toyId)) {
+        likedToyIds.value.push(toyId);
+      }
+      throw error;
+    }
+  };
+
   const dislikeToy = async (id: string): Promise<void> => {
     if (BYPASS_AUTH) {
       if (!dislikedToyIds.value.includes(id)) {
@@ -520,7 +613,9 @@ export const useToyStore = defineStore("toy", () => {
     if (!dislikedToyIds.value.includes(id)) {
       dislikedToyIds.value.push(id);
     }
-    likedToyIds.value = likedToyIds.value.filter((existingId) => existingId !== id);
+    likedToyIds.value = likedToyIds.value.filter(
+      (existingId) => existingId !== id,
+    );
 
     try {
       await runAction(async () => {
@@ -528,7 +623,9 @@ export const useToyStore = defineStore("toy", () => {
       });
     } catch (error) {
       // Rollback si erreur
-      dislikedToyIds.value = dislikedToyIds.value.filter((existingId) => existingId !== id);
+      dislikedToyIds.value = dislikedToyIds.value.filter(
+        (existingId) => existingId !== id,
+      );
       throw error;
     }
   };
@@ -571,6 +668,7 @@ export const useToyStore = defineStore("toy", () => {
     likeToy,
     dislikeToy,
     resetDisliked,
+    unlikeToy,
     clearError,
   };
 });

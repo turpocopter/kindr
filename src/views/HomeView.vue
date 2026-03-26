@@ -6,7 +6,28 @@ import { useToyStore } from "@/stores/useToyStore";
 const router = useRouter();
 const toyStore = useToyStore();
 
-const AVATARS = ["🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐸", "🐧", "🦄", "🐲", "🦋", "🌈", "⭐", "🎈", "🚀", "🎵", "🌺", "🍦", "🎮", "🏆"];
+const AVATARS = [
+  "🦊",
+  "🐻",
+  "🐼",
+  "🐨",
+  "🐯",
+  "🦁",
+  "🐸",
+  "🐧",
+  "🦄",
+  "🐲",
+  "🦋",
+  "🌈",
+  "⭐",
+  "🎈",
+  "🚀",
+  "🎵",
+  "🌺",
+  "🍦",
+  "🎮",
+  "🏆",
+];
 
 const showNewProfileForm = ref<boolean>(false);
 const newPrenom = ref<string>("");
@@ -73,14 +94,21 @@ const goToMyToy = (): void => {
 const goToBrowse = (): void => {
   router.push({ name: "browse" });
 };
+
+const goToLikedToy = async (toyId: string): Promise<void> => {
+  try {
+    await toyStore.unlikeToy(toyId);
+    router.push({ name: "browse", query: { featuredToyId: toyId } });
+  } catch {
+    router.push({ name: "browse" });
+  }
+};
 </script>
 
 <template>
-  <main
-    class="min-h-screen bg-gradient-to-b from-purple-500 via-pink-500 to-orange-400 px-5 py-10 text-white"
-  >
+  <main class="min-h-screen bg-blue-500 px-5 py-10 text-white">
     <section
-      class="mx-auto flex w-full max-w-md flex-col items-center rounded-3xl bg-white/20 p-6 shadow-2xl backdrop-blur-sm"
+      class="mx-auto flex w-full max-w-md flex-col items-center rounded-3xl bg-[#FFEA00] p-6 shadow-xl"
     >
       <img
         src="/logo.png"
@@ -91,72 +119,93 @@ const goToBrowse = (): void => {
       <!-- Écran de sélection de profil -->
       <section
         v-if="!toyStore.isAuthenticated"
-        class="mt-6 w-full rounded-3xl bg-white/90 p-5 text-slate-900 shadow-xl"
+        class="mt-6 w-full rounded-3xl bg-transparent p-5 text-slate-900"
       >
-        <h2 class="text-center text-2xl font-bold text-fuchsia-700">C'est qui ?</h2>
+        <h2 class="text-center text-2xl font-bold text-red-500">
+          🔑 Connexion
+        </h2>
 
-        <p v-if="authError || toyStore.errorMessage" class="mt-3 text-sm font-bold text-red-600 text-center">
+        <p
+          v-if="authError || toyStore.errorMessage"
+          class="mt-3 text-sm font-bold text-red-600 text-center"
+        >
           {{ authError || toyStore.errorMessage }}
         </p>
 
         <!-- Profils existants -->
         <div
           v-if="toyStore.storedProfiles.length > 0 && !showNewProfileForm"
-          class="mt-4 grid grid-cols-3 gap-3"
+          class="mt-4 flex flex-wrap justify-center gap-4"
         >
           <button
             v-for="profile in toyStore.storedProfiles"
             :key="profile.userId"
             type="button"
-            class="flex flex-col items-center gap-1 rounded-2xl bg-fuchsia-50 p-3 shadow transition hover:scale-105 active:scale-95 disabled:opacity-60"
-            :disabled="authLoading"
+            class="flex flex-col items-center gap-2 transition active:scale-95"
             @click="loginWithProfile(profile.userId)"
           >
-            <span class="text-5xl">{{ profile.avatar }}</span>
-            <span class="text-sm font-bold text-slate-700 truncate w-full text-center">{{ profile.prenom }}</span>
+            <div
+              class="flex flex-col items-center justify-center gap-1 rounded-full bg-red-500 text-white shadow-lg"
+              style="width: 150px; height: 150px"
+            >
+              <span class="text-6xl leading-none">{{ profile.avatar }}</span>
+              <span
+                class="text-xs font-bold text-white truncate w-full text-center px-2"
+                >{{ profile.prenom }}</span
+              >
+            </div>
           </button>
         </div>
 
         <!-- Formulaire nouveau profil -->
         <div v-if="showNewProfileForm" class="mt-4">
-          <p class="text-center font-bold text-slate-600 mb-3">Ton prénom :</p>
           <input
             v-model="newPrenom"
             type="text"
-            placeholder="Prénom..."
+            placeholder="Ton prénom..."
             maxlength="20"
-            class="w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-2xl font-bold text-center outline-none focus:border-fuchsia-400"
+            class="w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-2xl font-bold text-center outline-none focus:border-blue-500"
           />
 
-          <p class="mt-4 text-center font-bold text-slate-600 mb-3">Ton avatar :</p>
-          <div class="grid grid-cols-5 gap-2">
-            <button
-              v-for="emoji in AVATARS"
-              :key="emoji"
-              type="button"
-              class="rounded-2xl p-2 text-3xl transition hover:scale-110 active:scale-95"
-              :class="newAvatar === emoji ? 'bg-fuchsia-200 ring-2 ring-fuchsia-500 scale-110' : 'bg-slate-100'"
-              @click="selectAvatar(emoji)"
-            >
-              {{ emoji }}
-            </button>
+          <div class="mt-4 max-h-48 overflow-y-auto">
+            <div class="grid grid-cols-3 gap-x-1 gap-y-3 justify-items-center">
+              <button
+                v-for="emoji in AVATARS"
+                :key="emoji"
+                type="button"
+                class="flex items-center justify-center rounded-full transition active:scale-95"
+                style="width: 70px; height: 70px; font-size: 40px"
+                :class="
+                  newAvatar === emoji
+                    ? 'bg-red-500 ring-2 ring-red-700 scale-110'
+                    : 'bg-white shadow'
+                "
+                @click="selectAvatar(emoji)"
+              >
+                {{ emoji }}
+              </button>
+            </div>
           </div>
 
-          <div class="mt-4 flex gap-3">
+          <div class="mt-6 flex flex-col gap-3">
             <button
               type="button"
-              class="flex-1 min-h-12 rounded-full bg-slate-200 text-base font-bold text-slate-700"
-              @click="showNewProfileForm = false; newPrenom = ''; newAvatar = ''"
-            >
-              Annuler
-            </button>
-            <button
-              type="button"
-              class="flex-1 min-h-12 rounded-full bg-emerald-500 text-base font-bold text-white disabled:opacity-60"
+              class="btn-plastic-green w-full min-h-14 py-4 rounded-xl bg-green-500 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1 disabled:opacity-60"
               :disabled="authLoading || !newPrenom.trim() || !newAvatar"
               @click="createProfile"
             >
               {{ authLoading ? "..." : "C'est parti ! 🎉" }}
+            </button>
+            <button
+              type="button"
+              class="btn-plastic-red w-full min-h-14 py-4 rounded-xl bg-red-500 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1"
+              @click="
+                showNewProfileForm = false;
+                newPrenom = '';
+                newAvatar = '';
+              "
+            >
+              Annuler
             </button>
           </div>
         </div>
@@ -165,34 +214,41 @@ const goToBrowse = (): void => {
         <button
           v-if="!showNewProfileForm"
           type="button"
-          class="mt-4 w-full min-h-12 rounded-full bg-yellow-300 text-base font-bold text-slate-900 shadow transition hover:scale-[1.02]"
+          class="btn-plastic-green mt-10 w-full min-h-14 py-4 rounded-xl bg-green-500 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1"
           @click="showNewProfileForm = true"
         >
-          + Nouveau profil
+          <span class="relative z-10">✚ Nouveau profil</span>
         </button>
       </section>
 
       <!-- Connecté -->
       <section v-else class="mt-6 w-full">
-        <div class="rounded-2xl bg-white/90 p-4 text-slate-900 shadow flex items-center gap-4">
-          <span class="text-5xl">{{ toyStore.currentProfile?.avatar }}</span>
-          <div class="flex-1">
-            <p class="text-xl font-bold">{{ toyStore.currentProfile?.prenom }}</p>
+        <div
+          class="rounded-full bg-red-500 text-white shadow flex flex-col items-center justify-center gap-3 mx-auto"
+          style="width: 260px; height: 260px"
+        >
+          <div
+            class="flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-inner text-6xl"
+          >
+            {{ toyStore.currentProfile?.avatar }}
           </div>
+          <p class="text-3xl font-bold text-white">
+            {{ toyStore.currentProfile?.prenom }}
+          </p>
           <button
             type="button"
-            class="rounded-full bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 disabled:opacity-60"
+            class="mt-2 rounded-full bg-white px-6 py-2 text-sm font-bold text-red-500 disabled:opacity-60"
             :disabled="authLoading"
             @click="signOut"
           >
-            🚪
+            🚪 Déconnexion
           </button>
         </div>
       </section>
 
       <div
         v-if="toyStore.isAuthenticated && toyStore.myToy"
-        class="mt-8 w-full rounded-3xl bg-white/90 p-4 text-slate-900 shadow-xl"
+        class="mt-8 w-full rounded-3xl bg-slate-50 p-4 text-slate-900 shadow-xl"
       >
         <img
           :src="toyStore.myToy.photoUrl"
@@ -204,7 +260,7 @@ const goToBrowse = (): void => {
       <button
         v-if="toyStore.isAuthenticated && !toyStore.myToy"
         type="button"
-        class="mt-10 min-h-11 rounded-full bg-yellow-300 px-8 py-4 text-2xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
+        class="toy-btn-plastic mt-20 min-h-11 rounded-xl bg-yellow-400 px-8 py-4 text-2xl font-bold text-slate-900 transition active:scale-95 active:translate-y-1"
         @click="goToMyToy"
       >
         ✚ Ajouter mon jouet
@@ -212,16 +268,16 @@ const goToBrowse = (): void => {
 
       <section
         v-if="toyStore.matches.length > 0"
-        class="mt-8 w-full rounded-3xl bg-white/90 p-5 text-slate-900 shadow-xl ring-2 ring-yellow-300"
+        class="mt-8 w-full rounded-3xl bg-slate-50 p-5 text-slate-900 shadow-xl ring-2 ring-yellow-400"
       >
-        <h2 class="mb-4 text-xl font-bold text-fuchsia-700">
+        <h2 class="mb-4 text-xl font-bold text-blue-700">
           🎉 Tes matches ({{ toyStore.matches.length }})
         </h2>
         <ul class="flex flex-col gap-3">
           <li
             v-for="toy in toyStore.matches"
             :key="toy.id"
-            class="flex cursor-pointer items-center gap-4 rounded-2xl bg-fuchsia-50 p-3 shadow transition hover:scale-[1.01]"
+            class="flex cursor-pointer items-center gap-4 rounded-2xl bg-blue-100 p-3 shadow transition hover:scale-[1.01]"
             @click="router.push({ name: 'match', params: { toyId: toy.id } })"
           >
             <img
@@ -230,7 +286,9 @@ const goToBrowse = (): void => {
               class="h-16 w-16 rounded-2xl object-cover"
             />
             <div>
-              <p class="text-sm text-fuchsia-500 font-semibold">Voir le match ✨</p>
+              <p class="text-sm text-blue-700 font-semibold">
+                Voir le match ✨
+              </p>
             </div>
           </li>
         </ul>
@@ -238,21 +296,22 @@ const goToBrowse = (): void => {
 
       <section
         v-if="toyStore.likedToys.length > 0"
-        class="mt-8 w-full rounded-3xl bg-white/90 p-5 text-slate-900 shadow-xl"
+        class="mt-8 w-full rounded-3xl bg-slate-50 p-5 text-slate-900 shadow-xl"
       >
-        <h2 class="mb-4 text-xl font-bold text-fuchsia-700">
+        <h2 class="mb-4 text-xl font-bold text-blue-700">
           ❤️ Jouets mis de côté ({{ toyStore.likedToys.length }})
         </h2>
-        <ul class="flex flex-col gap-3">
+        <ul class="grid grid-cols-3 gap-3">
           <li
             v-for="toy in toyStore.likedToys"
             :key="toy.id"
-            class="flex items-center gap-4 rounded-2xl bg-fuchsia-50 p-3 shadow"
+            class="cursor-pointer rounded-2xl bg-yellow-100 p-2 shadow transition hover:scale-[1.02]"
+            @click="goToLikedToy(toy.id)"
           >
             <img
               :src="toy.photoUrl"
-              alt="Jouet aime"
-              class="h-16 w-16 rounded-2xl object-cover"
+              alt="Jouet aimé"
+              class="h-20 w-full rounded-xl object-cover"
             />
           </li>
         </ul>
@@ -261,7 +320,7 @@ const goToBrowse = (): void => {
       <button
         v-if="toyStore.isAuthenticated && toyStore.myToy"
         type="button"
-        class="mt-8 min-h-11 rounded-full bg-emerald-300 px-8 py-4 text-2xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
+        class="mt-8 min-h-11 rounded-full bg-green-500 px-8 py-4 text-2xl font-bold text-white shadow-lg transition hover:scale-[1.02]"
         @click="goToBrowse"
       >
         🔎
@@ -270,4 +329,64 @@ const goToBrowse = (): void => {
   </main>
 </template>
 
+<style scoped>
+.toy-btn-plastic {
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 55%);
+  box-shadow:
+    0 4px 0 #ca8a04,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
 
+.toy-btn-plastic:active {
+  box-shadow:
+    0 1px 0 #ca8a04,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-plastic-green {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #22c55e;
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 55%);
+  color: white;
+  box-shadow:
+    0 4px 0 #15803d,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-plastic-green:active {
+  box-shadow:
+    0 1px 0 #15803d,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-plastic-red {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #ef4444;
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 55%);
+  color: white;
+  box-shadow:
+    0 4px 0 #991b1b,
+    0 5px 7px rgba(0, 0, 0, 0.2),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-plastic-red:active {
+  box-shadow:
+    0 1px 0 #991b1b,
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+</style>

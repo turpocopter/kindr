@@ -75,18 +75,16 @@ const saveToy = async (): Promise<void> => {
 </script>
 
 <template>
-  <main
-    class="min-h-screen bg-gradient-to-b from-orange-400 via-amber-300 to-yellow-200 px-5 py-8"
-  >
+  <main class="min-h-screen bg-blue-500 px-5 py-8">
     <section
-      class="mx-auto w-full max-w-md rounded-3xl bg-white/85 p-6 shadow-2xl"
+      class="mx-auto w-full max-w-md rounded-3xl bg-slate-50 p-6 shadow-2xl"
     >
       <h1 class="text-center text-4xl font-bold text-slate-900">Ton jouet</h1>
 
       <label
         v-if="!photoPreview"
         for="toy-photo"
-        class="mt-8 flex min-h-11 w-full cursor-pointer flex-col items-center justify-center rounded-full bg-fuchsia-400 px-8 py-10 text-center text-3xl font-bold text-white shadow-lg"
+        class="mt-8 flex min-h-11 w-full cursor-pointer flex-col items-center justify-center rounded-full bg-yellow-400 px-8 py-10 text-center text-3xl font-bold text-slate-900 shadow-lg"
       >
         <span class="text-5xl">📷</span>
         <span class="mt-2 text-2xl">Prends une photo</span>
@@ -108,20 +106,17 @@ const saveToy = async (): Promise<void> => {
         class="mt-6 h-64 w-full rounded-3xl object-cover shadow-md"
       />
 
-      <div
-        v-if="photoPreview && !photoConfirmed"
-        class="mt-4 flex gap-3"
-      >
+      <div v-if="photoPreview && !photoConfirmed" class="mt-4 flex gap-3">
         <button
           type="button"
-          class="min-h-11 flex-1 rounded-full bg-slate-200 px-6 py-4 text-xl font-bold text-slate-800 shadow transition hover:scale-[1.02]"
+          class="min-h-11 flex-1 rounded-full bg-red-500 px-6 py-4 text-xl font-bold text-white shadow transition hover:scale-[1.02]"
           @click="retakePhoto"
         >
           🔄 Reprendre
         </button>
         <button
           type="button"
-          class="min-h-11 flex-1 rounded-full bg-emerald-400 px-6 py-4 text-xl font-bold text-white shadow-lg transition hover:scale-[1.02]"
+          class="min-h-11 flex-1 rounded-full bg-green-500 px-6 py-4 text-xl font-bold text-white shadow-lg transition hover:scale-[1.02]"
           @click="confirmPhoto"
         >
           ✅ Confirmer
@@ -129,13 +124,16 @@ const saveToy = async (): Promise<void> => {
       </div>
 
       <template v-if="photoConfirmed">
-        <p v-if="toyStore.errorMessage" class="mt-4 text-sm font-bold text-red-600">
+        <p
+          v-if="toyStore.errorMessage"
+          class="mt-4 text-sm font-bold text-red-600"
+        >
           {{ toyStore.errorMessage }}
         </p>
 
         <button
           type="button"
-          class="mt-7 min-h-11 w-full rounded-full bg-emerald-400 px-8 py-4 text-2xl font-bold text-white shadow-lg transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+          class="mt-7 min-h-11 w-full rounded-full bg-green-500 px-8 py-4 text-2xl font-bold text-white shadow-lg transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
           :disabled="isSaving"
           @click="saveToy"
         >

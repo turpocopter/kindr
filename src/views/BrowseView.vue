@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import SwipeStack from "@/components/SwipeStack.vue";
 import { useToyStore } from "@/stores/useToyStore";
 import type { Toy } from "@/types/toy";
 
+const route = useRoute();
 const router = useRouter();
 const toyStore = useToyStore();
 const reactionLoading = ref<boolean>(false);
@@ -20,13 +21,26 @@ onMounted(async () => {
   }
 });
 
-const remainingToys = computed(() =>
-  toyStore.availableToys.filter(
+const remainingToys = computed(() => {
+  const featuredId = route.query.featuredToyId as string | undefined;
+
+  const toys = toyStore.availableToys.filter(
     (toy) =>
       !toyStore.likedToyIds.includes(toy.id) &&
       !toyStore.dislikedToyIds.includes(toy.id),
-  ),
-);
+  );
+
+  if (!featuredId) {
+    return toys;
+  }
+
+  const featured = toys.find((toy) => toy.id === featuredId);
+  if (!featured) {
+    return toys;
+  }
+
+  return [featured, ...toys.filter((toy) => toy.id !== featuredId)];
+});
 
 const goBackHome = (): void => {
   router.push({ name: "home" });
@@ -83,15 +97,13 @@ const onLike = async (toy: Toy): Promise<void> => {
 </script>
 
 <template>
-  <main
-    class="min-h-screen bg-gradient-to-b from-sky-400 via-cyan-300 to-emerald-200 px-4 py-6"
-  >
+  <main class="min-h-screen bg-blue-500 px-4 py-6">
     <section class="mx-auto w-full max-w-md">
-      <header class="rounded-3xl bg-white/90 p-4 shadow-lg">
+      <header class="rounded-3xl bg-slate-50 p-4 shadow-lg">
         <div class="flex items-center gap-3">
           <button
             type="button"
-            class="flex shrink-0 items-center gap-1 rounded-full bg-fuchsia-500 px-3 py-2 text-m font-bold text-white shadow hover:bg-fuchsia-600"
+            class="flex shrink-0 items-center gap-1 rounded-full bg-red-500 px-3 py-2 text-m font-bold text-white shadow"
             @click="goBackHome"
           >
             ← 🏠
@@ -106,7 +118,12 @@ const onLike = async (toy: Toy): Promise<void> => {
             </div>
             <div class="shrink-0 text-right">
               <h3 class="text-m font-bold text-slate-500">🧺</h3>
-              <span class="w-1/5" v-for="index in remainingToys.length" :key="index">●</span>
+              <span
+                class="w-1/5"
+                v-for="index in remainingToys.length"
+                :key="index"
+                >●</span
+              >
             </div>
           </template>
         </div>
@@ -116,40 +133,45 @@ const onLike = async (toy: Toy): Promise<void> => {
         <button
           v-if="toyStore.myToy && toyStore.matches.length === 0"
           type="button"
-          class="mt-3 w-full rounded-full bg-amber-300 px-4 py-2 text-sm font-bold text-slate-900 shadow hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
+          class="mt-3 w-full rounded-full bg-red-400 px-4 py-2 text-sm font-bold text-white shadow disabled:cursor-not-allowed disabled:opacity-60"
           :disabled="isDeletingToy"
           @click="deleteCurrentToy"
         >
           🗑 Supprimer mon jouet et en choisir un autre
         </button>
-        <p v-if="toyStore.errorMessage" class="mt-2 text-center text-xs font-bold text-red-600">
+        <p
+          v-if="toyStore.errorMessage"
+          class="mt-2 text-center text-xs font-bold text-red-600"
+        >
           {{ toyStore.errorMessage }}
         </p>
       </header>
 
       <section
         v-if="remainingToys.length === 0"
-        class="mt-8 rounded-3xl bg-white/90 p-8 text-center shadow-xl"
+        class="mt-8 rounded-3xl bg-slate-50 p-8 text-center shadow-xl"
       >
         <p class="text-4xl">😢</p>
         <p class="mt-3 text-2xl font-bold text-slate-900">
-           🏁 Tu as tout parcouru !
+          🏁 Tu as tout parcouru !
         </p>
 
         <template v-if="toyStore.dislikedToyIds.length > 0">
           <p class="mt-2 text-base text-slate-500">
-            🙅🏻‍♀️ Tu as refusé {{ toyStore.dislikedToyIds.length }} jouet{{ toyStore.dislikedToyIds.length > 1 ? 's' : '' }}. Tu veux les revoir ?
+            🙅🏻‍♀️ Tu as refusé {{ toyStore.dislikedToyIds.length }} jouet{{
+              toyStore.dislikedToyIds.length > 1 ? "s" : ""
+            }}. Tu veux les revoir ?
           </p>
           <button
             type="button"
-            class="mt-6 min-h-11 rounded-full bg-emerald-400 px-8 py-4 text-xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
+            class="mt-6 min-h-11 rounded-full bg-green-500 px-8 py-4 text-xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
             @click="toyStore.resetDisliked()"
           >
             🔄 Revoir les refusés
           </button>
           <button
             type="button"
-            class="mt-3 min-h-11 rounded-full bg-fuchsia-500 px-8 py-4 text-xl font-bold text-white shadow-lg"
+            class="mt-3 min-h-11 rounded-full bg-red-500 px-8 py-4 text-xl font-bold text-white shadow-lg"
             @click="goBackHome"
           >
             ← 🏠
@@ -162,7 +184,7 @@ const onLike = async (toy: Toy): Promise<void> => {
           </p>
           <button
             type="button"
-            class="mt-6 min-h-11 rounded-full bg-fuchsia-500 px-8 py-4 text-xl font-bold text-white shadow-lg"
+            class="mt-6 min-h-11 rounded-full bg-red-500 px-8 py-4 text-xl font-bold text-white shadow-lg"
             @click="goBackHome"
           >
             ← 🏠
