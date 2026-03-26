@@ -1,5 +1,42 @@
-# Vue 3 + TypeScript + Vite
+# Kindr
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Frontend Vue + backend minimal via Supabase:
+- comptes utilisateurs (email + mot de passe)
+- upload de produits (photo + date `created_at`)
+- enregistrement des `like` / `dislike`
+- detection de match quand 2 produits se likent mutuellement
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## 1) Setup Supabase
+
+1. Cree un projet Supabase.
+2. Dans SQL Editor, execute le script [supabase/schema.sql](supabase/schema.sql).
+3. Dans Authentication > Providers, laisse Email actif.
+4. Dans Project Settings > API, recupere:
+	- `Project URL`
+	- `anon public key`
+
+## 2) Variables d'environnement
+
+Copie `.env.example` vers `.env` et renseigne les valeurs:
+
+```bash
+cp .env.example .env
+```
+
+```env
+VITE_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+VITE_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+```
+
+## 3) Lancer le projet
+
+```bash
+npm install
+npm run dev
+```
+
+## Notes
+
+- Le bucket storage utilise le nom `toy-photos`.
+- Les policies RLS autorisent uniquement la creation/mise a jour/suppression de ses propres produits et reactions.
+- Les photos sont publiques en lecture pour simplifier le MVP.

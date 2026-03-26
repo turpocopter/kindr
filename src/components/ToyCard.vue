@@ -12,7 +12,7 @@ defineProps<{
   >
     <img
       :src="toy.photoUrl"
-      :alt="toy.name"
+      alt="Photo du jouet"
       class="h-full w-full object-cover pointer-events-none"
       draggable="false"
     />
