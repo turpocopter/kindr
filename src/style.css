@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  overflow-x: clip;
+  touch-action: pan-y;
+  @apply m-0 min-h-screen text-slate-900;
+  font-family: "Comic Sans MS", "Chalkboard SE", cursive;
+}
+
+#app {
+  overflow-x: clip;
+  width: 100%;
+  min-height: 100vh;
+  touch-action: pan-y;
+}
