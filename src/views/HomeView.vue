@@ -7,8 +7,11 @@ import trokindrLogo from '../assets/trokindr-logo.png'
 const router = useRouter();
 const toyStore = useToyStore();
 
-const email = ref<string>("");
-const password = ref<string>("");
+const AVATARS = ["🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐸", "🐧", "🦄", "🐲", "🦋", "🌈", "⭐", "🎈", "🚀", "🎵", "🌺", "🍦", "🎮", "🏆"];
+
+const showNewProfileForm = ref<boolean>(false);
+const newPrenom = ref<string>("");
+const newAvatar = ref<string>("");
 const authLoading = ref<boolean>(false);
 const authError = ref<string>("");
 
@@ -18,28 +21,34 @@ onMounted(async () => {
   }
 });
 
-const signUp = async (): Promise<void> => {
+const selectAvatar = (avatar: string): void => {
+  newAvatar.value = avatar;
+};
+
+const createProfile = async (): Promise<void> => {
   authLoading.value = true;
-  toyStore.clearError();
   authError.value = "";
+  toyStore.clearError();
   try {
-    await toyStore.signUp(email.value.trim(), password.value);
-    await toyStore.signIn(email.value.trim(), password.value);
+    await toyStore.createProfile(newPrenom.value.trim(), newAvatar.value);
+    showNewProfileForm.value = false;
+    newPrenom.value = "";
+    newAvatar.value = "";
   } catch (error) {
-    authError.value = error instanceof Error ? error.message : "Auth failed";
+    authError.value = error instanceof Error ? error.message : "Erreur";
   } finally {
     authLoading.value = false;
   }
 };
 
-const signIn = async (): Promise<void> => {
+const loginWithProfile = async (userId: string): Promise<void> => {
   authLoading.value = true;
-  toyStore.clearError();
   authError.value = "";
+  toyStore.clearError();
   try {
-    await toyStore.signIn(email.value.trim(), password.value);
+    await toyStore.loginWithProfile(userId);
   } catch (error) {
-    authError.value = error instanceof Error ? error.message : "Auth failed";
+    authError.value = error instanceof Error ? error.message : "Erreur";
   } finally {
     authLoading.value = false;
   }
@@ -47,12 +56,12 @@ const signIn = async (): Promise<void> => {
 
 const signOut = async (): Promise<void> => {
   authLoading.value = true;
-  toyStore.clearError();
   authError.value = "";
+  toyStore.clearError();
   try {
     await toyStore.signOut();
   } catch (error) {
-    authError.value = error instanceof Error ? error.message : "Logout failed";
+    authError.value = error instanceof Error ? error.message : "Erreur";
   } finally {
     authLoading.value = false;
   }
@@ -80,53 +89,100 @@ const goToBrowse = (): void => {
         class="h-52 w-full rounded-2xl object-cover"
       />
 
+      <!-- Écran de sélection de profil -->
       <section
         v-if="!toyStore.isAuthenticated"
         class="mt-6 w-full rounded-3xl bg-white/90 p-5 text-slate-900 shadow-xl"
       >
-        <h2 class="text-center text-xl font-bold text-fuchsia-700">🔑 Connexion</h2>
-        <input
-          v-model="email"
-          type="email"
-          placeholder="email"
-          class="mt-4 min-h-11 w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-base font-semibold outline-none focus:border-fuchsia-400"
-        />
-        <input
-          v-model="password"
-          type="password"
-          placeholder="mot de passe"
-          class="mt-3 min-h-11 w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-base font-semibold outline-none focus:border-fuchsia-400"
-        />
-        <p v-if="authError || toyStore.errorMessage" class="mt-3 text-sm font-bold text-red-600">
+        <h2 class="text-center text-2xl font-bold text-fuchsia-700">C'est qui ?</h2>
+
+        <p v-if="authError || toyStore.errorMessage" class="mt-3 text-sm font-bold text-red-600 text-center">
           {{ authError || toyStore.errorMessage }}
         </p>
-        <div class="mt-4 grid grid-cols-2 gap-3">
+
+        <!-- Profils existants -->
+        <div
+          v-if="toyStore.storedProfiles.length > 0 && !showNewProfileForm"
+          class="mt-4 grid grid-cols-3 gap-3"
+        >
           <button
+            v-for="profile in toyStore.storedProfiles"
+            :key="profile.userId"
             type="button"
-            class="min-h-11 rounded-full bg-fuchsia-500 px-4 py-3 text-base font-bold text-white disabled:opacity-60"
-            :disabled="authLoading || !email.trim() || password.length < 6"
-            @click="signIn"
+            class="flex flex-col items-center gap-1 rounded-2xl bg-fuchsia-50 p-3 shadow transition hover:scale-105 active:scale-95 disabled:opacity-60"
+            :disabled="authLoading"
+            @click="loginWithProfile(profile.userId)"
           >
-            🔑 Se connecter
-          </button>
-          <button
-            type="button"
-            class="min-h-11 rounded-full bg-emerald-500 px-4 py-3 text-base font-bold text-white disabled:opacity-60"
-            :disabled="authLoading || !email.trim() || password.length < 6"
-            @click="signUp"
-          >
-            ✍️ Creer compte
+            <span class="text-5xl">{{ profile.avatar }}</span>
+            <span class="text-sm font-bold text-slate-700 truncate w-full text-center">{{ profile.prenom }}</span>
           </button>
         </div>
+
+        <!-- Formulaire nouveau profil -->
+        <div v-if="showNewProfileForm" class="mt-4">
+          <p class="text-center font-bold text-slate-600 mb-3">Ton prénom :</p>
+          <input
+            v-model="newPrenom"
+            type="text"
+            placeholder="Prénom..."
+            maxlength="20"
+            class="w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-2xl font-bold text-center outline-none focus:border-fuchsia-400"
+          />
+
+          <p class="mt-4 text-center font-bold text-slate-600 mb-3">Ton avatar :</p>
+          <div class="grid grid-cols-5 gap-2">
+            <button
+              v-for="emoji in AVATARS"
+              :key="emoji"
+              type="button"
+              class="rounded-2xl p-2 text-3xl transition hover:scale-110 active:scale-95"
+              :class="newAvatar === emoji ? 'bg-fuchsia-200 ring-2 ring-fuchsia-500 scale-110' : 'bg-slate-100'"
+              @click="selectAvatar(emoji)"
+            >
+              {{ emoji }}
+            </button>
+          </div>
+
+          <div class="mt-4 flex gap-3">
+            <button
+              type="button"
+              class="flex-1 min-h-12 rounded-full bg-slate-200 text-base font-bold text-slate-700"
+              @click="showNewProfileForm = false; newPrenom = ''; newAvatar = ''"
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              class="flex-1 min-h-12 rounded-full bg-emerald-500 text-base font-bold text-white disabled:opacity-60"
+              :disabled="authLoading || !newPrenom.trim() || !newAvatar"
+              @click="createProfile"
+            >
+              {{ authLoading ? "..." : "C'est parti ! 🎉" }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Bouton nouveau profil -->
+        <button
+          v-if="!showNewProfileForm"
+          type="button"
+          class="mt-4 w-full min-h-12 rounded-full bg-yellow-300 text-base font-bold text-slate-900 shadow transition hover:scale-[1.02]"
+          @click="showNewProfileForm = true"
+        >
+          + Nouveau profil
+        </button>
       </section>
 
+      <!-- Connecté -->
       <section v-else class="mt-6 w-full">
-        <div class="rounded-2xl bg-white/90 p-4 text-slate-900 shadow">
-          <p class="text-sm font-bold text-slate-500">Connecte en tant que</p>
-          <p class="truncate text-base font-bold">{{ toyStore.currentUser?.email }}</p>
+        <div class="rounded-2xl bg-white/90 p-4 text-slate-900 shadow flex items-center gap-4">
+          <span class="text-5xl">{{ toyStore.currentProfile?.avatar }}</span>
+          <div class="flex-1">
+            <p class="text-xl font-bold">{{ toyStore.currentProfile?.prenom }}</p>
+          </div>
           <button
             type="button"
-            class="mt-3 min-h-11 rounded-full bg-slate-900 px-4 py-2 text-sm font-bold text-white"
+            class="rounded-full bg-slate-200 px-4 py-2 text-sm font-bold text-slate-700 disabled:opacity-60"
             :disabled="authLoading"
             @click="signOut"
           >
@@ -214,3 +270,5 @@ const goToBrowse = (): void => {
     </section>
   </main>
 </template>
+
+

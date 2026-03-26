@@ -8,6 +8,7 @@ import type { Toy } from "@/types/toy";
 const router = useRouter();
 const toyStore = useToyStore();
 const reactionLoading = ref<boolean>(false);
+const isDeletingToy = ref<boolean>(false);
 
 onMounted(async () => {
   if (!toyStore.isAuthenticated) {
@@ -29,6 +30,22 @@ const remainingToys = computed(() =>
 
 const goBackHome = (): void => {
   router.push({ name: "home" });
+};
+
+const deleteCurrentToy = async (): Promise<void> => {
+  if (isDeletingToy.value) {
+    return;
+  }
+
+  isDeletingToy.value = true;
+  try {
+    await toyStore.deleteMyToy();
+    await router.push({ name: "myToy" });
+  } catch {
+    // Store state keeps the latest error message.
+  } finally {
+    isDeletingToy.value = false;
+  }
 };
 
 const onDislike = async (toy: Toy): Promise<void> => {
@@ -93,6 +110,18 @@ const onLike = async (toy: Toy): Promise<void> => {
             </div>
           </template>
         </div>
+        <p class="mt-2 text-center text-xs font-bold text-slate-500">
+          ❤️ {{ toyStore.likedToys.length }} mis de côté
+        </p>
+        <button
+          v-if="toyStore.myToy && toyStore.matches.length === 0"
+          type="button"
+          class="mt-3 w-full rounded-full bg-amber-300 px-4 py-2 text-sm font-bold text-slate-900 shadow hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
+          :disabled="isDeletingToy"
+          @click="deleteCurrentToy"
+        >
+          🗑 Supprimer mon jouet et en choisir un autre
+        </button>
         <p v-if="toyStore.errorMessage" class="mt-2 text-center text-xs font-bold text-red-600">
           {{ toyStore.errorMessage }}
         </p>

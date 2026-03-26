@@ -13,6 +13,28 @@ type ProductRow = {
 
 type ReactionType = "like" | "dislike";
 
+export type StoredProfile = {
+  userId: string;
+  prenom: string;
+  avatar: string;
+  accessToken: string;
+  refreshToken: string;
+};
+
+const PROFILES_KEY = "kindr_profiles";
+
+const loadStoredProfiles = (): StoredProfile[] => {
+  try {
+    return JSON.parse(localStorage.getItem(PROFILES_KEY) ?? "[]") as StoredProfile[];
+  } catch {
+    return [];
+  }
+};
+
+const saveStoredProfiles = (profiles: StoredProfile[]): void => {
+  localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+};
+
 const toToy = (row: ProductRow): Toy => ({
   id: row.id,
   ownerId: row.owner_id,
@@ -22,6 +44,8 @@ const toToy = (row: ProductRow): Toy => ({
 
 export const useToyStore = defineStore("toy", () => {
   const session = ref<Session | null>(null);
+  const currentProfile = ref<StoredProfile | null>(null);
+  const storedProfiles = ref<StoredProfile[]>(loadStoredProfiles());
   const isLoading = ref<boolean>(false);
   const errorMessage = ref<string>("");
   const myToy = ref<Toy | null>(null);
@@ -66,6 +90,7 @@ export const useToyStore = defineStore("toy", () => {
   const initialize = async (): Promise<void> => {
     isLoading.value = true;
     errorMessage.value = "";
+    storedProfiles.value = loadStoredProfiles();
 
     try {
       const { data, error } = await supabase.auth.getSession();
@@ -79,6 +104,9 @@ export const useToyStore = defineStore("toy", () => {
         return;
       }
 
+      const userId = session.value.user.id;
+      currentProfile.value = storedProfiles.value.find((p) => p.userId === userId) ?? null;
+
       await loadMyToy();
       await loadAvailableToys();
       await loadReactions();
@@ -89,26 +117,66 @@ export const useToyStore = defineStore("toy", () => {
     }
   };
 
-  const signUp = async (email: string, password: string): Promise<void> => {
+  const createProfile = async (prenom: string, avatar: string): Promise<void> => {
     await runAction(async () => {
-      const { error } = await supabase.auth.signUp({ email, password });
+      const { data, error } = await supabase.auth.signInAnonymously();
       if (error) {
         throw error;
       }
+      if (!data.session) {
+        throw new Error("Pas de session retournée");
+      }
+
+      const newProfile: StoredProfile = {
+        userId: data.session.user.id,
+        prenom: prenom.trim(),
+        avatar,
+        accessToken: data.session.access_token,
+        refreshToken: data.session.refresh_token,
+      };
+
+      const profiles = loadStoredProfiles();
+      profiles.push(newProfile);
+      saveStoredProfiles(profiles);
+      storedProfiles.value = profiles;
+
+      session.value = data.session;
+      currentProfile.value = newProfile;
+
+      await loadMyToy();
+      await loadAvailableToys();
+      await loadReactions();
     });
   };
 
-  const signIn = async (email: string, password: string): Promise<void> => {
+  const loginWithProfile = async (userId: string): Promise<void> => {
     await runAction(async () => {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const profiles = loadStoredProfiles();
+      const profile = profiles.find((p) => p.userId === userId);
+      if (!profile) {
+        throw new Error("Profil introuvable");
+      }
+
+      const { data, error } = await supabase.auth.setSession({
+        access_token: profile.accessToken,
+        refresh_token: profile.refreshToken,
       });
       if (error) {
         throw error;
       }
+      if (!data.session) {
+        throw new Error("Session invalide");
+      }
+
+      // Mise à jour des tokens au cas où ils ont été rafraîchis
+      profile.accessToken = data.session.access_token;
+      profile.refreshToken = data.session.refresh_token;
+      saveStoredProfiles(profiles);
+      storedProfiles.value = profiles;
 
       session.value = data.session;
+      currentProfile.value = profile;
+
       await loadMyToy();
       await loadAvailableToys();
       await loadReactions();
@@ -117,12 +185,13 @@ export const useToyStore = defineStore("toy", () => {
 
   const signOut = async (): Promise<void> => {
     await runAction(async () => {
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut({ scope: "local" });
       if (error) {
         throw error;
       }
 
       session.value = null;
+      currentProfile.value = null;
       clearLocalState();
     });
   };
@@ -278,6 +347,36 @@ export const useToyStore = defineStore("toy", () => {
     });
   };
 
+  const deleteMyToy = async (): Promise<void> => {
+    await runAction(async () => {
+      if (!currentUser.value || !myToy.value) {
+        throw new Error("No toy to delete");
+      }
+
+      await loadReactions();
+      if (matches.value.length > 0) {
+        throw new Error("Tu ne peux pas supprimer un jouet qui a deja un match");
+      }
+
+      const toyIdToDelete = myToy.value.id;
+      const { error } = await supabase
+        .from("products")
+        .delete()
+        .eq("id", toyIdToDelete)
+        .eq("owner_id", currentUser.value.id);
+
+      if (error) {
+        throw error;
+      }
+
+      myToy.value = null;
+      likedToyIds.value = [];
+      dislikedToyIds.value = [];
+      matches.value = [];
+      await loadAvailableToys();
+    });
+  };
+
   const recordReaction = async (
     targetToyId: string,
     reaction: ReactionType,
@@ -359,6 +458,7 @@ export const useToyStore = defineStore("toy", () => {
   supabase.auth.onAuthStateChange((_event, nextSession) => {
     session.value = nextSession;
     if (!nextSession) {
+      currentProfile.value = null;
       clearLocalState();
     }
   });
@@ -366,6 +466,8 @@ export const useToyStore = defineStore("toy", () => {
   return {
     session,
     currentUser,
+    currentProfile,
+    storedProfiles,
     isAuthenticated,
     isLoading,
     errorMessage,
@@ -376,13 +478,14 @@ export const useToyStore = defineStore("toy", () => {
     dislikedToyIds,
     matches,
     initialize,
-    signUp,
-    signIn,
+    createProfile,
+    loginWithProfile,
     signOut,
     loadMyToy,
     loadAvailableToys,
     loadReactions,
     createMyToy,
+    deleteMyToy,
     likeToy,
     dislikeToy,
     resetDisliked,
