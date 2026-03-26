@@ -41,8 +41,8 @@ const MOCK_TOYS: Toy[] = [
   },
   {
     id: "toy-15",
-    name: "B0CBQTVK7H",
-    photoUrl: "https://www.amazon.fr/lUnivers-articul%C3%A9e-collection-mini-bande-HYD17/dp/B0CBQTVK7H",
+    name: "musclor",
+    photoUrl: "https://m.media-amazon.com/images/I/71T1iFc6naL._AC_SL1500_.jpg",
     ownerId: "child-08",
   },
   {
