@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import confetti from "canvas-confetti";
 import { useToyStore } from "@/stores/useToyStore";
 
 const route = useRoute();
@@ -15,6 +16,33 @@ const matchToy = computed(() => {
 const continueBrowsing = (): void => {
   router.push({ name: "browse" });
 };
+
+onMounted(() => {
+  const end = Date.now() + 2500;
+
+  const frame = (): void => {
+    confetti({
+      particleCount: 6,
+      angle: 60,
+      spread: 70,
+      origin: { x: 0, y: 0.6 },
+      colors: ["#f0abfc", "#fbbf24", "#34d399", "#60a5fa", "#f87171"],
+    });
+    confetti({
+      particleCount: 6,
+      angle: 120,
+      spread: 70,
+      origin: { x: 1, y: 0.6 },
+      colors: ["#f0abfc", "#fbbf24", "#34d399", "#60a5fa", "#f87171"],
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  };
+
+  frame();
+});
 </script>
 
 <template>

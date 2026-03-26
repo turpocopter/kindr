@@ -72,16 +72,43 @@ const onLike = (toy: Toy): void => {
         v-if="remainingToys.length === 0"
         class="mt-8 rounded-3xl bg-white/90 p-8 text-center shadow-xl"
       >
-        <p class="text-3xl font-bold text-slate-900">
-          Plus de jouets pour l'instant 😢
+        <p class="text-4xl">😢</p>
+        <p class="mt-3 text-2xl font-bold text-slate-900">
+          Tu as tout parcouru !
         </p>
-        <button
-          type="button"
-          class="mt-6 min-h-11 rounded-full bg-fuchsia-500 px-8 py-4 text-xl font-bold text-white shadow-lg"
-          @click="goBackHome"
-        >
-          Retour
-        </button>
+
+        <template v-if="toyStore.dislikedToyIds.length > 0">
+          <p class="mt-2 text-base text-slate-500">
+            Tu as refusé {{ toyStore.dislikedToyIds.length }} jouet{{ toyStore.dislikedToyIds.length > 1 ? 's' : '' }}. Tu veux les revoir ?
+          </p>
+          <button
+            type="button"
+            class="mt-6 min-h-11 rounded-full bg-emerald-400 px-8 py-4 text-xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
+            @click="toyStore.resetDisliked()"
+          >
+            🔄 Revoir les refusés
+          </button>
+          <button
+            type="button"
+            class="mt-3 min-h-11 rounded-full bg-fuchsia-500 px-8 py-4 text-xl font-bold text-white shadow-lg"
+            @click="goBackHome"
+          >
+            Retour à l'accueil
+          </button>
+        </template>
+
+        <template v-else>
+          <p class="mt-2 text-base text-slate-500">
+            Reviens plus tard pour de nouveaux jouets !
+          </p>
+          <button
+            type="button"
+            class="mt-6 min-h-11 rounded-full bg-fuchsia-500 px-8 py-4 text-xl font-bold text-white shadow-lg"
+            @click="goBackHome"
+          >
+            Retour à l'accueil
+          </button>
+        </template>
       </section>
 
       <section v-else class="mt-6">
