@@ -74,7 +74,7 @@ const onLike = async (toy: Toy): Promise<void> => {
         <div class="flex items-center gap-3">
           <button
             type="button"
-            class="flex shrink-0 items-center gap-1 rounded-full bg-fuchsia-500 px-3 py-2 text-sm font-bold text-white shadow hover:bg-fuchsia-600"
+            class="flex shrink-0 items-center gap-1 rounded-full bg-fuchsia-500 px-3 py-2 text-m font-bold text-white shadow hover:bg-fuchsia-600"
             @click="goBackHome"
           >
             ← 🏠
@@ -88,14 +88,11 @@ const onLike = async (toy: Toy): Promise<void> => {
               />
             </div>
             <div class="shrink-0 text-right">
-              <p class="text-xs font-bold text-slate-500">🧺 Restants</p>
+              <h3 class="text-m font-bold text-slate-500">🧺</h3>
               <span class="w-1/5" v-for="index in remainingToys.length" :key="index">●</span>
             </div>
           </template>
         </div>
-        <p class="mt-2 text-center text-xs font-bold text-slate-500">
-          ❤️ {{ toyStore.likedToys.length }} mis de côté
-        </p>
         <p v-if="toyStore.errorMessage" class="mt-2 text-center text-xs font-bold text-red-600">
           {{ toyStore.errorMessage }}
         </p>

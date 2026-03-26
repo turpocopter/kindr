@@ -209,7 +209,7 @@ const goToBrowse = (): void => {
         class="mt-8 min-h-11 rounded-full bg-emerald-300 px-8 py-4 text-2xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
         @click="goToBrowse"
       >
-        🔎 Parcourir les jouets
+        🔎
       </button>
     </section>
   </main>
