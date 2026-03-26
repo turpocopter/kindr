@@ -126,21 +126,17 @@ const onLike = async (toy: Toy): Promise<void> => {
         v-if="remainingToys.length === 0"
         class="mt-8 rounded-3xl bg-white/90 p-8 text-center shadow-xl"
       >
-        <p class="text-4xl">😢</p>
-        <p class="mt-3 text-2xl font-bold text-slate-900">
-           🏁 Tu as tout parcouru !
+        <p class="mt-3 text-5xl font-bold text-slate-900">
+           🏁
         </p>
 
         <template v-if="toyStore.dislikedToyIds.length > 0">
-          <p class="mt-2 text-base text-slate-500">
-            🙅🏻‍♀️ Tu as refusé {{ toyStore.dislikedToyIds.length }} jouet{{ toyStore.dislikedToyIds.length > 1 ? 's' : '' }}. Tu veux les revoir ?
-          </p>
           <button
             type="button"
             class="mt-6 min-h-11 rounded-full bg-emerald-400 px-8 py-4 text-xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
             @click="resetDisliked()"
           >
-            🔄 Revoir les refusés
+            🔄
           </button>
           <button
             type="button"
@@ -153,7 +149,7 @@ const onLike = async (toy: Toy): Promise<void> => {
 
         <template v-else>
           <p class="mt-2 text-base text-slate-500">
-            ⏳ Reviens plus tard pour de nouveaux jouets !
+            ⏳
           </p>
           <button
             type="button"
