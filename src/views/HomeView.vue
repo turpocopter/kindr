@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToyStore } from "@/stores/useToyStore";
+import trokindrLogo from '../assets/trokindr-logo.png'
 
 const router = useRouter();
 const toyStore = useToyStore();
@@ -73,8 +74,11 @@ const goToBrowse = (): void => {
     <section
       class="mx-auto flex w-full max-w-md flex-col items-center rounded-3xl bg-white/20 p-6 shadow-2xl backdrop-blur-sm"
     >
-      <h1 class="text-center text-5xl font-bold drop-shadow-lg">🧸 Kindr</h1>
-      <p class="mt-3 text-center text-xl font-bold">Swipe. Match. Troque. 🤝</p>
+      <img
+        :src="trokindrLogo"
+        alt="Logo"
+        class="h-52 w-full rounded-2xl object-cover"
+      />
 
       <section
         v-if="!toyStore.isAuthenticated"
