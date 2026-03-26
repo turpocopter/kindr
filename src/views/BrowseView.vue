@@ -4,11 +4,15 @@ import { useRouter } from "vue-router";
 import SwipeStack from "@/components/SwipeStack.vue";
 import { useToyStore } from "@/stores/useToyStore";
 import type { Toy } from "@/types/toy";
+import { useSound } from '@vueuse/sound'
+import notAnymore from '@/assets/notAnymore.mp3'
+
 
 const router = useRouter();
 const toyStore = useToyStore();
 const reactionLoading = ref<boolean>(false);
 const isDeletingToy = ref<boolean>(false);
+const notAnymoreSound = useSound(notAnymore, { volume: 1 });
 
 onMounted(async () => {
   if (!toyStore.isAuthenticated) {
@@ -48,6 +52,11 @@ const deleteCurrentToy = async (): Promise<void> => {
   }
 };
 
+const playNotAnymoreSound = async () => {
+  console.log("playing sound");
+  await setTimeout(() => notAnymoreSound.play(), 1000);
+}
+
 const onDislike = async (toy: Toy): Promise<void> => {
   if (reactionLoading.value) {
     return;
@@ -59,6 +68,9 @@ const onDislike = async (toy: Toy): Promise<void> => {
   } catch {
     // Store state keeps the latest error message.
   } finally {
+    if (remainingToys.value.length == 0) {
+      playNotAnymoreSound();
+    }
     reactionLoading.value = false;
   }
 };
@@ -77,6 +89,9 @@ const onLike = async (toy: Toy): Promise<void> => {
   } catch {
     // Store state keeps the latest error message.
   } finally {
+    if (remainingToys.value.length == 0) {
+      playNotAnymoreSound();
+    }
     reactionLoading.value = false;
   }
 };
@@ -106,22 +121,12 @@ const onLike = async (toy: Toy): Promise<void> => {
             </div>
             <div class="shrink-0 text-right">
               <h3 class="text-m font-bold text-slate-500">🧺</h3>
+              <span class="w-1/5 text-sm" v-for="index in toyStore.likedToys.length" :key="index">❤️</span>
+              <span class="w-1/5 text-sm" v-for="index in toyStore.dislikedToyIds.length" :key="index">😢</span>
               <span class="w-1/5" v-for="index in remainingToys.length" :key="index">●</span>
             </div>
           </template>
         </div>
-        <p class="mt-2 text-center text-xs font-bold text-slate-500">
-          ❤️ {{ toyStore.likedToys.length }} mis de côté
-        </p>
-        <button
-          v-if="toyStore.myToy && toyStore.matches.length === 0"
-          type="button"
-          class="mt-3 w-full rounded-full bg-amber-300 px-4 py-2 text-sm font-bold text-slate-900 shadow hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
-          :disabled="isDeletingToy"
-          @click="deleteCurrentToy"
-        >
-          🗑 Supprimer mon jouet et en choisir un autre
-        </button>
         <p v-if="toyStore.errorMessage" class="mt-2 text-center text-xs font-bold text-red-600">
           {{ toyStore.errorMessage }}
         </p>

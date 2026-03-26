@@ -176,14 +176,14 @@ const dislikeWithButton = (): void => {
           class="pointer-events-none absolute left-4 top-5 rounded-full bg-red-500 px-4 py-2 text-2xl font-bold text-white"
           :style="{ opacity: dislikeOpacity }"
         >
-          ❌
+          ☹️
         </div>
         <div
           v-if="index === 0"
           class="pointer-events-none absolute right-4 top-5 rounded-full bg-emerald-500 px-4 py-2 text-2xl font-bold text-white"
           :style="{ opacity: likeOpacity }"
         >
-          ✅
+          ❤️
         </div>
       </div>
     </div>
@@ -196,14 +196,14 @@ const dislikeWithButton = (): void => {
         class="min-h-11 rounded-full bg-red-500 px-7 py-4 text-3xl font-bold text-white shadow-lg transition hover:scale-105"
         @click="dislikeWithButton"
       >
-        👎
+        ☹️
       </button>
       <button
         type="button"
         class="min-h-11 rounded-full bg-emerald-500 px-7 py-4 text-3xl font-bold text-white shadow-lg transition hover:scale-105"
         @click="likeWithButton"
       >
-        👍
+        ❤️
       </button>
     </div>
   </div>
