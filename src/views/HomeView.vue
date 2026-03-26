@@ -84,7 +84,7 @@ const goToBrowse = (): void => {
         v-if="!toyStore.isAuthenticated"
         class="mt-6 w-full rounded-3xl bg-white/90 p-5 text-slate-900 shadow-xl"
       >
-        <h2 class="text-center text-xl font-bold text-fuchsia-700">Connexion</h2>
+        <h2 class="text-center text-xl font-bold text-fuchsia-700">🔑 Connexion</h2>
         <input
           v-model="email"
           type="email"
@@ -107,7 +107,7 @@ const goToBrowse = (): void => {
             :disabled="authLoading || !email.trim() || password.length < 6"
             @click="signIn"
           >
-            Se connecter
+            🔑 Se connecter
           </button>
           <button
             type="button"
@@ -115,7 +115,7 @@ const goToBrowse = (): void => {
             :disabled="authLoading || !email.trim() || password.length < 6"
             @click="signUp"
           >
-            Creer compte
+            ✍️ Creer compte
           </button>
         </div>
       </section>
@@ -130,7 +130,7 @@ const goToBrowse = (): void => {
             :disabled="authLoading"
             @click="signOut"
           >
-            Se deconnecter
+            🚪
           </button>
         </div>
       </section>
@@ -152,7 +152,7 @@ const goToBrowse = (): void => {
         class="mt-10 min-h-11 rounded-full bg-yellow-300 px-8 py-4 text-2xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
         @click="goToMyToy"
       >
-        Ajouter mon jouet
+        ✚ Ajouter mon jouet
       </button>
 
       <section
@@ -209,7 +209,7 @@ const goToBrowse = (): void => {
         class="mt-8 min-h-11 rounded-full bg-emerald-300 px-8 py-4 text-2xl font-bold text-slate-900 shadow-lg transition hover:scale-[1.02]"
         @click="goToBrowse"
       >
-        Parcourir les jouets
+        🔎 Parcourir les jouets
       </button>
     </section>
   </main>

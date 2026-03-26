@@ -77,7 +77,7 @@ const onLike = async (toy: Toy): Promise<void> => {
             class="flex shrink-0 items-center gap-1 rounded-full bg-fuchsia-500 px-3 py-2 text-sm font-bold text-white shadow hover:bg-fuchsia-600"
             @click="goBackHome"
           >
-            ← Accueil
+            ← 🏠
           </button>
           <template v-if="toyStore.myToy">
             <div class="flex min-w-0 flex-1 items-center gap-2">
@@ -88,8 +88,8 @@ const onLike = async (toy: Toy): Promise<void> => {
               />
             </div>
             <div class="shrink-0 text-right">
-              <p class="text-xs font-bold text-slate-500">Restants</p>
-              <p class="text-xl font-bold text-slate-900">{{ remainingToys.length }}</p>
+              <p class="text-xs font-bold text-slate-500">🧺 Restants</p>
+              <span class="w-1/5" v-for="index in remainingToys.length" :key="index">●</span>
             </div>
           </template>
         </div>
@@ -107,12 +107,12 @@ const onLike = async (toy: Toy): Promise<void> => {
       >
         <p class="text-4xl">😢</p>
         <p class="mt-3 text-2xl font-bold text-slate-900">
-          Tu as tout parcouru !
+           🏁 Tu as tout parcouru !
         </p>
 
         <template v-if="toyStore.dislikedToyIds.length > 0">
           <p class="mt-2 text-base text-slate-500">
-            Tu as refusé {{ toyStore.dislikedToyIds.length }} jouet{{ toyStore.dislikedToyIds.length > 1 ? 's' : '' }}. Tu veux les revoir ?
+            🙅🏻‍♀️ Tu as refusé {{ toyStore.dislikedToyIds.length }} jouet{{ toyStore.dislikedToyIds.length > 1 ? 's' : '' }}. Tu veux les revoir ?
           </p>
           <button
             type="button"
@@ -126,20 +126,20 @@ const onLike = async (toy: Toy): Promise<void> => {
             class="mt-3 min-h-11 rounded-full bg-fuchsia-500 px-8 py-4 text-xl font-bold text-white shadow-lg"
             @click="goBackHome"
           >
-            Retour à l'accueil
+            ← 🏠
           </button>
         </template>
 
         <template v-else>
           <p class="mt-2 text-base text-slate-500">
-            Reviens plus tard pour de nouveaux jouets !
+            ⏳ Reviens plus tard pour de nouveaux jouets !
           </p>
           <button
             type="button"
             class="mt-6 min-h-11 rounded-full bg-fuchsia-500 px-8 py-4 text-xl font-bold text-white shadow-lg"
             @click="goBackHome"
           >
-            Retour à l'accueil
+            ← 🏠
           </button>
         </template>
       </section>

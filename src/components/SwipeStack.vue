@@ -202,14 +202,14 @@ const dislikeWithButton = (): void => {
         class="min-h-11 rounded-full bg-red-500 px-7 py-4 text-3xl font-bold text-white shadow-lg transition hover:scale-105"
         @click="dislikeWithButton"
       >
-        Veux pas !
+        👎
       </button>
       <button
         type="button"
         class="min-h-11 rounded-full bg-emerald-500 px-7 py-4 text-3xl font-bold text-white shadow-lg transition hover:scale-105"
         @click="likeWithButton"
       >
-        Veux !
+        👍
       </button>
     </div>
   </div>
