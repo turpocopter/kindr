@@ -86,11 +86,6 @@ const dislikeOpacity = computed(() =>
   translateX.value < 0 ? Math.min(Math.abs(translateX.value) / 120, 1) : 0,
 );
 
-const nextCard = (): void => {
-  translateX.value = 0;
-  leavingDirection.value = null;
-};
-
 const triggerAction = (direction: "left" | "right"): void => {
   const toy = topCard.value;
   if (!toy) {
@@ -106,8 +101,9 @@ const triggerAction = (direction: "left" | "right"): void => {
       emit("dislike", toy);
       dontWantSound.play();
     }
-    nextCard();
-  }, 230);
+    leavingDirection.value = null;
+    translateX.value = 0;
+  }, 300);
 };
 
 const onPointerDown = (event: PointerEvent): void => {
@@ -173,7 +169,6 @@ const dislikeWithButton = (): void => {
         @pointermove="(e) => index === 0 && onPointerMove(e)"
         @pointerup="() => index === 0 && onPointerUp()"
         @pointercancel="() => index === 0 && onPointerUp()"
-        @pointerleave="() => index === 0 && isDragging && onPointerUp()"
       >
         <ToyCard :toy="toy" />
 

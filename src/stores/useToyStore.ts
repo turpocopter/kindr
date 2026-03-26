@@ -4,6 +4,17 @@ import type { Session } from "@supabase/supabase-js";
 import type { Toy } from "@/types/toy";
 import { supabase } from "@/lib/supabase";
 
+const BYPASS_AUTH = import.meta.env.VITE_AUTH_BYPASS === 'true';
+
+const MOCK_TOYS_BYPASS: Toy[] = [
+  { id: 'mock-1', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=10', createdAt: '' },
+  { id: 'mock-2', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=20', createdAt: '' },
+  { id: 'mock-3', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=30', createdAt: '' },
+  { id: 'mock-4', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=40', createdAt: '' },
+  { id: 'mock-5', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=50', createdAt: '' },
+  { id: 'mock-6', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=60', createdAt: '' },
+];
+
 type ProductRow = {
   id: string;
   owner_id: string;
@@ -88,6 +99,22 @@ export const useToyStore = defineStore("toy", () => {
   };
 
   const initialize = async (): Promise<void> => {
+    if (BYPASS_AUTH) {
+      session.value = {
+        user: {
+          id: 'bypass-user-id',
+          email: 'dev@bypass.local',
+          app_metadata: {},
+          user_metadata: {},
+          aud: 'authenticated',
+          created_at: '',
+        },
+      } as unknown as Session;
+      availableToys.value = MOCK_TOYS_BYPASS;
+      isLoading.value = false;
+      return;
+    }
+
     isLoading.value = true;
     errorMessage.value = "";
     storedProfiles.value = loadStoredProfiles();
@@ -307,7 +334,10 @@ export const useToyStore = defineStore("toy", () => {
     }
 
     const extension = file.name.split(".").pop() ?? "jpg";
-    const objectPath = `${currentUser.value.id}/${crypto.randomUUID()}.${extension}`;
+    const uuid = typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const objectPath = `${currentUser.value.id}/${uuid}.${extension}`;
 
     const { error: uploadError } = await supabase.storage
       .from("toy-photos")
@@ -325,6 +355,16 @@ export const useToyStore = defineStore("toy", () => {
   };
 
   const createMyToy = async (file: File): Promise<void> => {
+    if (BYPASS_AUTH) {
+      myToy.value = {
+        id: 'mock-my-toy',
+        ownerId: 'bypass-user-id',
+        photoUrl: URL.createObjectURL(file),
+        createdAt: new Date().toISOString(),
+      };
+      return;
+    }
+
     await runAction(async () => {
       if (!currentUser.value) {
         throw new Error("User must be logged in");
@@ -438,7 +478,30 @@ export const useToyStore = defineStore("toy", () => {
   };
 
   const likeToy = async (toy: Toy): Promise<boolean> => {
-    return runAction(async () => recordReaction(toy.id, "like"));
+    if (BYPASS_AUTH) {
+      if (!likedToyIds.value.includes(toy.id)) {
+        likedToyIds.value.push(toy.id);
+      }
+      const isMatch = Math.random() >= 0.5;
+      if (isMatch && !matches.value.some((m) => m.id === toy.id)) {
+        matches.value.push(toy);
+      }
+      return isMatch;
+    }
+
+    // Mise à jour optimiste synchrone
+    if (!likedToyIds.value.includes(toy.id)) {
+      likedToyIds.value.push(toy.id);
+    }
+    dislikedToyIds.value = dislikedToyIds.value.filter((id) => id !== toy.id);
+
+    try {
+      return await runAction(async () => recordReaction(toy.id, "like"));
+    } catch (error) {
+      // Rollback si erreur
+      likedToyIds.value = likedToyIds.value.filter((id) => id !== toy.id);
+      throw error;
+    }
   };
 
   const resetDisliked = (): void => {
@@ -446,9 +509,28 @@ export const useToyStore = defineStore("toy", () => {
   };
 
   const dislikeToy = async (id: string): Promise<void> => {
-    await runAction(async () => {
-      await recordReaction(id, "dislike");
-    });
+    if (BYPASS_AUTH) {
+      if (!dislikedToyIds.value.includes(id)) {
+        dislikedToyIds.value.push(id);
+      }
+      return;
+    }
+
+    // Mise à jour optimiste synchrone
+    if (!dislikedToyIds.value.includes(id)) {
+      dislikedToyIds.value.push(id);
+    }
+    likedToyIds.value = likedToyIds.value.filter((existingId) => existingId !== id);
+
+    try {
+      await runAction(async () => {
+        await recordReaction(id, "dislike");
+      });
+    } catch (error) {
+      // Rollback si erreur
+      dislikedToyIds.value = dislikedToyIds.value.filter((existingId) => existingId !== id);
+      throw error;
+    }
   };
 
   const clearError = (): void => {

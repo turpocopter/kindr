@@ -2,7 +2,6 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToyStore } from "@/stores/useToyStore";
-import trokindrLogo from '../assets/trokindr-logo.png'
 
 const router = useRouter();
 const toyStore = useToyStore();
@@ -84,9 +83,9 @@ const goToBrowse = (): void => {
       class="mx-auto flex w-full max-w-md flex-col items-center rounded-3xl bg-white/20 p-6 shadow-2xl backdrop-blur-sm"
     >
       <img
-        :src="trokindrLogo"
+        src="/logo.png"
         alt="Logo"
-        class="h-52 w-full rounded-2xl object-cover"
+        class="h-36 w-auto object-contain drop-shadow-lg"
       />
 
       <!-- Écran de sélection de profil -->

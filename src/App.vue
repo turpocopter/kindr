@@ -10,5 +10,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <RouterView />
+  <div class="app-wrapper">
+    <RouterView />
+  </div>
 </template>
+
+<style scoped>
+.app-wrapper {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+  touch-action: pan-y;
+}
+</style>
