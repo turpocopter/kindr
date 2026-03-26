@@ -4,6 +4,17 @@ import type { Session } from "@supabase/supabase-js";
 import type { Toy } from "@/types/toy";
 import { supabase } from "@/lib/supabase";
 
+const BYPASS_AUTH = import.meta.env.VITE_AUTH_BYPASS === 'true';
+
+const MOCK_TOYS_BYPASS: Toy[] = [
+  { id: 'mock-1', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=10', createdAt: '' },
+  { id: 'mock-2', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=20', createdAt: '' },
+  { id: 'mock-3', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=30', createdAt: '' },
+  { id: 'mock-4', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=40', createdAt: '' },
+  { id: 'mock-5', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=50', createdAt: '' },
+  { id: 'mock-6', ownerId: 'bypass-other', photoUrl: 'https://picsum.photos/300/400?random=60', createdAt: '' },
+];
+
 type ProductRow = {
   id: string;
   owner_id: string;
@@ -64,6 +75,22 @@ export const useToyStore = defineStore("toy", () => {
   };
 
   const initialize = async (): Promise<void> => {
+    if (BYPASS_AUTH) {
+      session.value = {
+        user: {
+          id: 'bypass-user-id',
+          email: 'dev@bypass.local',
+          app_metadata: {},
+          user_metadata: {},
+          aud: 'authenticated',
+          created_at: '',
+        },
+      } as unknown as Session;
+      availableToys.value = MOCK_TOYS_BYPASS;
+      isLoading.value = false;
+      return;
+    }
+
     isLoading.value = true;
     errorMessage.value = "";
 
@@ -339,6 +366,16 @@ export const useToyStore = defineStore("toy", () => {
   };
 
   const likeToy = async (toy: Toy): Promise<boolean> => {
+    if (BYPASS_AUTH) {
+      if (!likedToyIds.value.includes(toy.id)) {
+        likedToyIds.value.push(toy.id);
+      }
+      const isMatch = Math.random() >= 0.5;
+      if (isMatch && !matches.value.some((m) => m.id === toy.id)) {
+        matches.value.push(toy);
+      }
+      return isMatch;
+    }
     return runAction(async () => recordReaction(toy.id, "like"));
   };
 
@@ -347,6 +384,12 @@ export const useToyStore = defineStore("toy", () => {
   };
 
   const dislikeToy = async (id: string): Promise<void> => {
+    if (BYPASS_AUTH) {
+      if (!dislikedToyIds.value.includes(id)) {
+        dislikedToyIds.value.push(id);
+      }
+      return;
+    }
     await runAction(async () => {
       await recordReaction(id, "dislike");
     });
