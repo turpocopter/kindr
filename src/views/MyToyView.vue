@@ -116,7 +116,7 @@ const saveToy = async (): Promise<void> => {
           class="btn-plastic-red min-h-16 flex-1 rounded-xl bg-red-500 px-6 py-5 text-3xl font-bold text-white transition active:scale-95 active:translate-y-1"
           @click="retakePhoto"
         >
-          🔄
+          📷
         </button>
         <button
           type="button"

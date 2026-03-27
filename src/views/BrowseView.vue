@@ -168,14 +168,14 @@ const onLike = async (toy: Toy): Promise<void> => {
               class="btn-plastic-green w-full min-h-14 rounded-xl bg-green-500 py-4 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1"
               @click="resetDisliked()"
             >
-              🔄
+              😢❓
             </button>
             <button
               type="button"
               class="btn-plastic-blue w-full min-h-14 rounded-xl bg-blue-500 py-4 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1"
               @click="goBackHome"
             >
-              🏠
+              🔄
             </button>
           </div>
         </template>
@@ -190,7 +190,7 @@ const onLike = async (toy: Toy): Promise<void> => {
               class="btn-plastic-blue w-full min-h-14 rounded-xl bg-blue-500 py-4 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1"
               @click="goBackHome"
             >
-              🏠
+              🔄
             </button>
           </div>
         </template>
