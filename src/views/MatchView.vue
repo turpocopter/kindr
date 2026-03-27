@@ -48,6 +48,10 @@ const selectWhen = (option: WhenOption): void => {
   selectedWhen.value = option;
 };
 
+const goBackHome = (): void => {
+  router.push({ name: "home" });
+};
+
 onMounted(async () => {
   try {
     if (!toyStore.isAuthenticated) {
@@ -69,17 +73,6 @@ const matchToy = computed(() => {
   const toyId = String(route.params.toyId);
   return toyStore.matches.find((toy) => toy.id === toyId) ?? null;
 });
-
-const continueBrowsing = async (): Promise<void> => {
-  try {
-    const browseRoute = { name: "browse" };
-    await router.push(browseRoute);
-  } catch (error) {
-    console.error("Failed to continue browsing", error);
-  } finally {
-    // Intentionally empty: explicit action finalization.
-  }
-};
 
 onMounted(() => {
   if (!confettiCanvas.value) {
@@ -229,9 +222,9 @@ onMounted(() => {
       <button
         type="button"
         class="mt-8 min-h-11 rounded-full bg-fuchsia-500 px-8 py-4 text-2xl font-bold text-white shadow-lg"
-        @click="continueBrowsing"
+        @click="goBackHome"
       >
-        Continuer à parcourir
+        🤝
       </button>
     </section>
     <canvas
