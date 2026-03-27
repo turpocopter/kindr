@@ -173,7 +173,7 @@ const onLike = async (toy: Toy): Promise<void> => {
             <button
               type="button"
               class="btn-plastic-blue w-full min-h-14 rounded-xl bg-blue-500 py-4 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1"
-              @click="goBackHome"
+              @click="toyStore.initialize()"
             >
               🔄
             </button>
@@ -188,7 +188,7 @@ const onLike = async (toy: Toy): Promise<void> => {
             <button
               type="button"
               class="btn-plastic-blue w-full min-h-14 rounded-xl bg-blue-500 py-4 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1"
-              @click="goBackHome"
+              @click="toyStore.initialize()"
             >
               🔄
             </button>
