@@ -44,6 +44,7 @@ const onFileChange = (event: Event): void => {
 
 const confirmPhoto = (): void => {
   photoConfirmed.value = true;
+  saveToy();
 };
 
 const retakePhoto = (): void => {
@@ -123,24 +124,9 @@ const saveToy = async (): Promise<void> => {
           class="btn-plastic-green min-h-16 flex-1 rounded-xl bg-green-500 px-6 py-5 text-3xl font-bold text-white transition active:scale-95 active:translate-y-1"
           @click="confirmPhoto"
         >
-          ✅
-        </button>
-      </div>
-
-      <template v-if="photoConfirmed">
-        <p v-if="toyStore.errorMessage" class="mt-4 text-sm font-bold text-red-600">
-          {{ toyStore.errorMessage }}
-        </p>
-
-        <button
-          type="button"
-          class="btn-plastic-green mt-7 min-h-11 w-full rounded-xl bg-green-500 px-8 py-4 text-2xl font-bold text-white transition active:scale-95 active:translate-y-1 disabled:cursor-not-allowed disabled:opacity-60"
-          :disabled="isSaving"
-          @click="saveToy"
-        >
           🚀
         </button>
-      </template>
+      </div>
     </section>
   </main>
 </template>
